@@ -23,9 +23,9 @@ public class AprilTag_test extends OpMode {
     public void loop() {
         AprilTagDetection DATA = aprilTag.GetDetection(12);
         if (DATA != null) {
-            telemetry.addLine(String.format("XYZ %6.1f %6.1f %6.1f  (inch)", DATA.ftcPose.x, DATA.ftcPose.y, DATA.ftcPose.z));
+            telemetry.addLine(String.format("XYZ %6.1f %6.1f %6.1f  (CM)", DATA.ftcPose.x, DATA.ftcPose.y, DATA.ftcPose.z));
             telemetry.addLine(String.format("PRY %6.1f %6.1f %6.1f  (deg)", DATA.ftcPose.pitch, DATA.ftcPose.roll, DATA.ftcPose.yaw));
-            telemetry.addLine(String.format("RBE %6.1f %6.1f %6.1f  (inch, deg, deg)", DATA.ftcPose.range, DATA.ftcPose.bearing, DATA.ftcPose.elevation));
+            telemetry.addLine(String.format("RBE %6.1f %6.1f %6.1f  (CM, deg, deg)", DATA.ftcPose.range, DATA.ftcPose.bearing, DATA.ftcPose.elevation));
             telemetry.update();
         }
     }
