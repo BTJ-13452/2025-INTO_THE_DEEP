@@ -1,7 +1,10 @@
 package org.firstinspires.ftc.teamcode.RobotSystems;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -22,17 +25,23 @@ public class DriveSystem {
     Orientation angles = new Orientation();
 
     public double initYaw;
-            Gamepad gamepad;
+    Gamepad gamepad;
     Telemetry telemetry;
 
     public boolean opModeIsActive = false;
 
 
+    public void Drive(HardwareMap map,Gamepad gamepad) {
 
+        this.gamepad = gamepad;
+        leftBackDrive = map.get(DcMotor.class, "BL");
+        leftFrontDrive = map.get(DcMotor.class, "FL");
+        rightBackDrive = map.get(DcMotor.class, "BR");
+        rightFrontDrive = map.get(DcMotor.class, "FR");
 
-
-    public void Drive() {
-
+        rightFrontDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftFrontDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        imu = map.get(IMU.class, "imu");
         angles = imu.getRobotOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
         double zeroDYaw = angles.firstAngle;
@@ -41,20 +50,20 @@ public class DriveSystem {
         double y = -gamepad.left_stick_y;
         double turn = gamepad.right_stick_x;
 
-        double theta = Math.atan2(y, x)* 180/Math.PI;
+        double theta = Math.atan2(y, x) * 180 / Math.PI;
         double realtheta;
         realtheta = (360 - zeroDYaw) + theta;
         double power = Math.hypot(x, y);
 
-        double sin = Math.sin((realtheta*(Math.PI/180))-(Math.PI /4));
-        double cos = Math.cos((realtheta*(Math.PI/180))-(Math.PI /4));
-        double maxsincos = Math.max(Math.abs(sin),Math.abs(cos));
+        double sin = Math.sin((realtheta * (Math.PI / 180)) - (Math.PI / 4));
+        double cos = Math.cos((realtheta * (Math.PI / 180)) - (Math.PI / 4));
+        double maxsincos = Math.max(Math.abs(sin), Math.abs(cos));
 
         double leftFront = (power * cos / maxsincos + turn);
         double rightFront = (power * sin / maxsincos - turn);
         double leftBack = (power * sin / maxsincos + turn);
-        double rightBack =(power * cos / maxsincos - turn);
-        if ((power + Math.abs(turn))>1) {
+        double rightBack = (power * cos / maxsincos - turn);
+        if ((power + Math.abs(turn)) > 1) {
             leftFront /= power + turn;
             rightFront /= power - turn;
             leftBack /= power + turn;
@@ -73,20 +82,20 @@ public class DriveSystem {
         double y = -gamepad.left_stick_y;
         double turn = gamepad.right_stick_x;
 
-        double theta = Math.atan2(y, x)* 180/Math.PI;
+        double theta = Math.atan2(y, x) * 180 / Math.PI;
         double realtheta;
         realtheta = (360 - zeroDYaw) + theta;
         double power = Math.hypot(x, y);
 
-        double sin = Math.sin((realtheta*(Math.PI/180))-(Math.PI /4));
-        double cos = Math.cos((realtheta*(Math.PI/180))-(Math.PI /4));
-        double maxsincos = Math.max(Math.abs(sin),Math.abs(cos));
+        double sin = Math.sin((realtheta * (Math.PI / 180)) - (Math.PI / 4));
+        double cos = Math.cos((realtheta * (Math.PI / 180)) - (Math.PI / 4));
+        double maxsincos = Math.max(Math.abs(sin), Math.abs(cos));
 
         double leftFront = (power * cos / maxsincos + turn);
         double rightFront = (power * sin / maxsincos - turn);
         double leftBack = (power * sin / maxsincos + turn);
-        double rightBack =(power * cos / maxsincos - turn);
-        if ((power + Math.abs(turn))>1) {
+        double rightBack = (power * cos / maxsincos - turn);
+        if ((power + Math.abs(turn)) > 1) {
             leftFront /= power + turn;
             rightFront /= power - turn;
             leftBack /= power + turn;
