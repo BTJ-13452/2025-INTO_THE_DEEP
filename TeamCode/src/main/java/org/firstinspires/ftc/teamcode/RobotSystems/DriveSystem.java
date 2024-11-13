@@ -39,8 +39,11 @@ public class DriveSystem {
         rightBackDrive = map.get(DcMotor.class, "BR");
         rightFrontDrive = map.get(DcMotor.class, "FR");
 
-        rightFrontDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftBackDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+
+
         leftFrontDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+
         imu = map.get(IMU.class, "imu");
         angles = imu.getRobotOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
