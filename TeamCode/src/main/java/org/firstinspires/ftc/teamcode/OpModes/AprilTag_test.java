@@ -21,7 +21,7 @@ public class AprilTag_test extends OpMode {
 
     @Override
     public void loop() {
-        AprilTagDetection DATA = aprilTag.GetDetection(12);
+        AprilTagDetection DATA = aprilTag.GetDetection(11);
         if (DATA != null) {
             telemetry.addLine(String.format("XYZ %6.1f %6.1f %6.1f  (CM)", DATA.ftcPose.x, DATA.ftcPose.y, DATA.ftcPose.z));
             telemetry.addLine(String.format("PRY %6.1f %6.1f %6.1f  (deg)", DATA.ftcPose.pitch, DATA.ftcPose.roll, DATA.ftcPose.yaw));
