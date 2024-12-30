@@ -53,7 +53,7 @@ public class TestTeleOp extends OpMode {
 
         if (gamepad1.x && !XPressed) {
             XPressed = true;
-            claw.openJoint();
+            claw.frontClose();
         } else if (!gamepad1.x) {
             XPressed = false;
         }
@@ -66,7 +66,7 @@ public class TestTeleOp extends OpMode {
 
         if (gamepad1.a && !APressed) {
             APressed = true;
-            claw.frontClose();
+            claw.openJoint();
 
         } else if (!gamepad1.a)
             APressed = false;
