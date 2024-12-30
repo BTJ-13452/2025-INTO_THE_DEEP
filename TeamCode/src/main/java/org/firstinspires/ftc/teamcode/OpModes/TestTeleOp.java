@@ -24,6 +24,8 @@ public class TestTeleOp extends OpMode {
     private boolean YPressed = false;
     private boolean BPressed = false;
     private boolean sampleIn = false;
+    private boolean isFildoOn = true;
+    private boolean left_stick_button_Pressed = false;
     ElevatorTest elevatorSystem;
     ErectionSystem elvatorErectionSystem;
     TestSheiva sheiva;
@@ -33,7 +35,7 @@ public class TestTeleOp extends OpMode {
     @Override
     public void init() {
         claw = new Claw(hardwareMap);
-        drive = new DriveSystem(hardwareMap, gamepad1);
+        drive = new DriveSystem(hardwareMap, gamepad1, 0);
         elevatorSystem = new ElevatorTest(hardwareMap);
         elvatorErectionSystem = new ErectionSystem(hardwareMap);
         // sheiva = new TestSheiva(hardwareMap);
@@ -45,7 +47,9 @@ public class TestTeleOp extends OpMode {
 //        telemetry.addData("magnet", elvatorErectionSystem.erectionMagnet.isPressed());
 //        telemetry.update();
 
-        drive.Drive();
+        if (isFildoOn) {
+            drive.Drive();
+        } else drive.DriveWithoutFildo();
 
         if (gamepad1.x && !XPressed) {
             XPressed = true;
@@ -85,6 +89,20 @@ public class TestTeleOp extends OpMode {
         if (!gamepad1.left_bumper && !gamepad1.right_bumper) {
             elevatorSystem.StopElevator();
         }
+
+
+        if (gamepad1.right_stick_button && isFildoOn) {
+            isFildoOn = false;
+        }
+
+        if (gamepad1.left_stick_button && !left_stick_button_Pressed) {
+            drive.resetFildo();
+            isFildoOn = true;
+            left_stick_button_Pressed = true;
+        } else if (!gamepad1.left_stick_button) {
+            left_stick_button_Pressed = false;
+        }
+
 
 //        if (sheiva.distanceSensor.getDistance(DistanceUnit.CM) < 4 && !sampleIn) {
 //            sheiva.stopSheiva();

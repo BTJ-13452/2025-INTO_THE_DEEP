@@ -28,9 +28,12 @@ public class DriveSystem {
     Gamepad gamepad;
     Telemetry telemetry;
 
+    int startAngel;
+
     public boolean opModeIsActive = false;
 
-    public DriveSystem(HardwareMap map,Gamepad gamepad){
+    public DriveSystem(HardwareMap map, Gamepad gamepad, int startAngel) {
+        this.startAngel = startAngel;
         this.gamepad = gamepad;
         leftBackDrive = map.get(DcMotor.class, "BL");
         leftFrontDrive = map.get(DcMotor.class, "FL");
@@ -45,11 +48,14 @@ public class DriveSystem {
         imu.resetYaw();
     }
 
+    public void resetFildo() {
+        imu.resetYaw();
+    }
 
     public void Drive() {
         angles = imu.getRobotOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
-        double zeroDYaw = angles.firstAngle;
+        double zeroDYaw = angles.firstAngle - startAngel;
 
         double x = gamepad.left_stick_x;
         double y = -gamepad.left_stick_y;
