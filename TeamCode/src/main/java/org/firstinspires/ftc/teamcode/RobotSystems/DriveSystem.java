@@ -44,6 +44,11 @@ public class DriveSystem {
 
         leftFrontDrive.setDirection(DcMotorSimple.Direction.REVERSE);
 
+
+        leftFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         imu = map.get(IMU.class, "imu");
         imu.resetYaw();
     }
