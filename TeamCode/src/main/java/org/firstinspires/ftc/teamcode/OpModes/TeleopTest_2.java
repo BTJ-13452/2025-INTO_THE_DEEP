@@ -15,14 +15,14 @@ public class TeleopTest_2 extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         claw = new Claw(hardwareMap);
-        claw.openServoClaw();
+//        claw.openServoClaw();
         waitForStart();
         while (opModeIsActive()) {
             telemetry.addData("maxticks", ".getTicks()");
             telemetry.update();
             if (gamepad1.y) {
                 aIsPressed = false;
-                claw.openServoClaw();
+//                claw.openServoClaw();
             }
         }
     }

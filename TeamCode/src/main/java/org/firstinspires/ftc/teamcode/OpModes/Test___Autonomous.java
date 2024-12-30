@@ -31,15 +31,16 @@ public class Test___Autonomous extends OpMode {
     @Override
     public void start() {
         super.start();
-
+//
         drive.driveForDistance(-0.4, 0, drive.frontDistance, 20);
 
 
-        drive.driveByAprilTAg(-0.4,52,12,0);
+        drive.driveByAprilTag(-0.4,52,12,0);
 
-       cameraServo.moveCamera();
+        cameraServo.moveCamera();
 
-        drive.driveByAprilTAg(0.4,53,11,-90);
+        drive.driveByAprilTag(0.5, 53, 11, -90);
+
     }
 
     @Override

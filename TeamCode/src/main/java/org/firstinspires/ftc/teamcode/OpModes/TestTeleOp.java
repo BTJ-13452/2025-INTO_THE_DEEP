@@ -33,10 +33,10 @@ public class TestTeleOp extends OpMode {
     @Override
     public void init() {
         claw = new Claw(hardwareMap);
-        drive = new DriveSystem();
-        elvatorErectionSystem = new ErectionSystem(hardwareMap);
+        drive = new DriveSystem(hardwareMap, gamepad1);
         elevatorSystem = new ElevatorTest(hardwareMap);
-        sheiva = new TestSheiva(hardwareMap);
+        elvatorErectionSystem = new ErectionSystem(hardwareMap);
+        // sheiva = new TestSheiva(hardwareMap);
         hung = new Hung(hardwareMap);
     }
 
@@ -45,14 +45,27 @@ public class TestTeleOp extends OpMode {
 //        telemetry.addData("magnet", elvatorErectionSystem.erectionMagnet.isPressed());
 //        telemetry.update();
 
-        drive.Drive(hardwareMap, gamepad1);
+        drive.Drive();
 
         if (gamepad1.x && !XPressed) {
             XPressed = true;
-            claw.openServoClaw();
+            claw.openJoint();
         } else if (!gamepad1.x) {
             XPressed = false;
         }
+
+        if (gamepad1.y && !YPressed) {
+            YPressed = true;
+            claw.backClose();
+        } else if (!gamepad1.y)
+            YPressed = false;
+
+        if (gamepad1.a && !APressed) {
+            APressed = true;
+            claw.frontClose();
+
+        } else if (!gamepad1.a)
+            APressed = false;
 
         if (gamepad1.b && !BPressed) {
             BPressed = true;
@@ -72,20 +85,6 @@ public class TestTeleOp extends OpMode {
         if (!gamepad1.left_bumper && !gamepad1.right_bumper) {
             elevatorSystem.StopElevator();
         }
-
-
-        if (gamepad1.a && !APressed) {
-            APressed = true;
-            sheiva.openSheiva();
-
-        } else if (!gamepad1.a)
-            APressed = false;
-
-        if (gamepad1.y && !YPressed) {
-            YPressed = true;
-            sheiva.closeSheiva();
-        } else if (!gamepad1.y)
-            YPressed = false;
 
 //        if (sheiva.distanceSensor.getDistance(DistanceUnit.CM) < 4 && !sampleIn) {
 //            sheiva.stopSheiva();

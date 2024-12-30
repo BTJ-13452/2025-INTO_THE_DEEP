@@ -30,9 +30,7 @@ public class DriveSystem {
 
     public boolean opModeIsActive = false;
 
-
-    public void Drive(HardwareMap map,Gamepad gamepad) {
-
+    public DriveSystem(HardwareMap map,Gamepad gamepad){
         this.gamepad = gamepad;
         leftBackDrive = map.get(DcMotor.class, "BL");
         leftFrontDrive = map.get(DcMotor.class, "FL");
@@ -41,10 +39,14 @@ public class DriveSystem {
 
         leftBackDrive.setDirection(DcMotorSimple.Direction.REVERSE);
 
-
         leftFrontDrive.setDirection(DcMotorSimple.Direction.REVERSE);
 
         imu = map.get(IMU.class, "imu");
+        imu.resetYaw();
+    }
+
+
+    public void Drive() {
         angles = imu.getRobotOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
         double zeroDYaw = angles.firstAngle;

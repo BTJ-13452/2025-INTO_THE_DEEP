@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.OpModes;
 
+import static android.os.SystemClock.sleep;
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -40,8 +41,10 @@ public class ErectionSystem {
         motorRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        motorRight.setDirection(DcMotorSimple.Direction.REVERSE);
+
         // Set motors to zero position
-//        setToZero();
+        CloseElevator();
 
         // Motor run modes and encoder setup
         motorRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -50,7 +53,6 @@ public class ErectionSystem {
         motorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        motorRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
         motorRight.setTargetPosition(0);
         motorLeft.setTargetPosition(0);
@@ -109,5 +111,23 @@ public class ErectionSystem {
 
         motorRight.setPower(1);
         motorLeft.setPower(1);
+    }
+
+    public void CloseElevator() {
+        final boolean[] isPassedTime = {false};
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                sleep(3000);
+                isPassedTime[0] = true;
+            }
+        }).start();
+
+        while (!isPassedTime[0] && !erectionMagnet.isPressed()) {
+            motorRight.setPower(-0.7);
+            motorLeft.setPower(-0.7);
+        }
+        motorRight.setPower(0);
+        motorLeft.setPower(0);
     }
 }

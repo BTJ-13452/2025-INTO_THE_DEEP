@@ -17,7 +17,7 @@ public class ElevatorTest {
     private DcMotor elevator;
     private TouchSensor elevatorMagnet;
    // private TouchSensor magneticSwitch;
-    private final double Speed = 1;
+    private final double Speed = 0.7;
     private final int MAX_HEIGHT = 1000;
 
     /**
@@ -32,7 +32,7 @@ public class ElevatorTest {
         elevator.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         elevator.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         elevator.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-       // CloseElevator();
+        CloseElevator();
     }
 
     /**
@@ -89,7 +89,7 @@ public class ElevatorTest {
                 isPassedTime[0] = true;
             }
         }).start();
-        while (!isPassedTime[0]) {
+        while (!isPassedTime[0]&& !elevatorMagnet.isPressed()) {
             elevator.setPower(Speed);
         }
         elevator.setPower(0);
