@@ -78,16 +78,16 @@ public class TestTeleOp extends OpMode {
             BPressed = false;
         }
 
-        elvatorErectionSystem.raisedAndlowerErection(gamepad1.right_trigger - gamepad1.left_trigger);
+        elevatorSystem.raisedAndlowerElevator(gamepad1.left_trigger - gamepad1.right_trigger);
 
         if (gamepad1.right_bumper) {
-            elevatorSystem.Extension();
+            elvatorErectionSystem.raisedErection();
         }
         if (gamepad1.left_bumper) {
-            elevatorSystem.LowerElevator();
+            elvatorErectionSystem.lowerErection();
         }
         if (!gamepad1.left_bumper && !gamepad1.right_bumper) {
-            elevatorSystem.StopElevator();
+            elvatorErectionSystem.stopErection();
         }
 
 

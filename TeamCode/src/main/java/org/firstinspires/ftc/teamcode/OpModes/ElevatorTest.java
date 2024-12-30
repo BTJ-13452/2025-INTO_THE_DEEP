@@ -19,6 +19,7 @@ public class ElevatorTest {
    // private TouchSensor magneticSwitch;
     private final double Speed = 0.7;
     private final int MAX_HEIGHT = 1000;
+    private final int POWER = 1000;
 
     /**
      * Constructs a new ElevatorSystem.
@@ -38,10 +39,16 @@ public class ElevatorTest {
     /**
      * Extends the elevator.
      */
-    public void Extension() {
-        if (elevator.getCurrentPosition() > -2215) {
-            elevator.setPower(-1);
-        } else {
+    public void raisedAndlowerElevator (double multiplier) {
+        elevator.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+
+        if (!elevatorMagnet.isPressed() || multiplier <= 0)
+        {
+            elevator.setPower(POWER * multiplier);
+        }
+        else
+        {
             elevator.setPower(0);
         }
     }

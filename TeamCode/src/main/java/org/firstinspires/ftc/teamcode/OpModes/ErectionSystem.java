@@ -20,7 +20,6 @@ public class ErectionSystem {
 
     final double POWER = 1;
 
-
     DcMotor motorRight;
     DcMotor motorLeft;
     public TouchSensor erectionMagnet;
@@ -30,7 +29,7 @@ public class ErectionSystem {
      *
      * @param map The HardwareMap object used to initialize hardware components.
      */
-    public ErectionSystem (HardwareMap map) {
+    public ErectionSystem(HardwareMap map) {
         // Motor initialization
         motorRight = map.get(DcMotor.class, RIGHT_MOTOR_CONFIGURE);
         motorLeft = map.get(DcMotor.class, LEFT_MOTOR_CONFIGURE);
@@ -75,22 +74,23 @@ public class ErectionSystem {
 //        Rm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 //    }
 
-    /**
-     * Raises or lowers the elevator based on the specified multiplier.
-     *
-     * @param multiplier The multiplier to adjust the power for raising or lowering the elevator.
-     */
-    public void raisedAndlowerErection (double multiplier) {
+
+    public void raisedErection() {
         motorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        if (!erectionMagnet.isPressed() || multiplier >= 0)
-        {
-            motorLeft.setPower(POWER * multiplier);
-            motorRight.setPower(POWER * multiplier);
-        }
-        else
-        {
+        motorLeft.setPower(POWER);
+        motorRight.setPower(POWER);
+
+    }
+
+    public void lowerErection() {
+        motorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        if (!erectionMagnet.isPressed()) {
+            motorLeft.setPower(-POWER);
+            motorRight.setPower(-POWER);
+        }else {
             motorLeft.setPower(0);
             motorRight.setPower(0);
         }
@@ -109,8 +109,8 @@ public class ErectionSystem {
         motorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        motorRight.setPower(1);
-        motorLeft.setPower(1);
+        motorRight.setPower(0);
+        motorLeft.setPower(0);
     }
 
     public void CloseElevator() {
