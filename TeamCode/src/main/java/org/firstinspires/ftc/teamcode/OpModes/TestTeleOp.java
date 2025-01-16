@@ -84,7 +84,7 @@ public class TestTeleOp extends OpMode {
         elvatorErectionSystem.raisedAndlowerErection(gamepad1.right_trigger - gamepad1.left_trigger);
 
         if (gamepad1.right_bumper) {
-            elevatorSystem.upperElevator();
+            elevatorSystem.upperElevator(elvatorErectionSystem.erectionMagnet.isPressed());
         }
         if (gamepad1.left_bumper) {
             elevatorSystem.lowerElevator();
@@ -95,9 +95,20 @@ public class TestTeleOp extends OpMode {
 
 
         if (gamepad1.right_stick_button && isFildoOn) {
-            claw.closeJoint();
-            elvatorErectionSystem.CloseElevator();
-            elevatorSystem.CloseElevator();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    claw.closeJoint();
+                    elvatorErectionSystem.CloseElevator();
+                }
+            }).start();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    elevatorSystem.CloseElevator();
+                }
+            }).start();
+
         }
 
         if (gamepad1.left_stick_button && !left_stick_button_Pressed) {

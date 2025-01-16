@@ -57,9 +57,11 @@ public class ElevatorTest {
         elevator.setPower(-POWER);
     }
 
-    public void upperElevator() {
-        if (elevator.getCurrentPosition() >= -2400) {
-            elevator.setPower(-0.8);
+    public void upperElevator(boolean isErectionMIsPressd) {
+        if (elevator.getCurrentPosition() >= -2500) {
+            if (!isErectionMIsPressd || elevator.getCurrentPosition()>=-1600) {
+                elevator.setPower(-0.8);
+            }
         } else {
             elevator.setPower(0);
         }
