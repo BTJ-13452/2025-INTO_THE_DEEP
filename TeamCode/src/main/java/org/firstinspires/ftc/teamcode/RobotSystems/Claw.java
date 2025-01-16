@@ -13,13 +13,13 @@ public class Claw {
     public Servo servoClawR;
     public Servo clawJoint;
 
-    public Claw (HardwareMap map) {
+    public Claw(HardwareMap map) {
         servoClawL = map.servo.get("ClawL");
         servoClawR = map.servo.get("ClawR");
         clawJoint = map.servo.get("ClawJ");
-        servoClawR.setPosition(MID);
-        servoClawL.setPosition(MID);
-        clawJoint.setPosition(MID);
+        servoClawR.setPosition(MAX);
+        servoClawL.setPosition(MIN);
+        clawJoint.setPosition(MIN);
     }
 
     public void frontClose() {
@@ -32,6 +32,7 @@ public class Claw {
             servoClawL.setPosition(MID);
         }
     }
+
     public void backClose() {
         if (servoClawR.getPosition() == MID) {
             servoClawR.setPosition(MAX);
@@ -43,12 +44,17 @@ public class Claw {
         }
     }
 
-    public void openJoint(){
+    public void openJoint() {
         if (clawJoint.getPosition() == MID) {
             clawJoint.setPosition(MIN);
 
         } else {
             clawJoint.setPosition(MID);
         }
+    }
+
+    public void closeJoint() {
+
+        clawJoint.setPosition(MIN);
     }
 }

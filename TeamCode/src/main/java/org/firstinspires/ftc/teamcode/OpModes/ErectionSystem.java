@@ -18,7 +18,7 @@ public class ErectionSystem {
     final String RIGHT_MOTOR_CONFIGURE = "rm";
     final String LEFT_MOTOR_CONFIGURE = "lm";
 
-    final double POWER = 1;
+    final double POWER = 0.7;
 
     DcMotor motorRight;
     DcMotor motorLeft;
@@ -96,6 +96,22 @@ public class ErectionSystem {
         }
     }
 
+    public void raisedAndlowerErection (double multiplier) {
+        motorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        if (!erectionMagnet.isPressed() || multiplier >= 0)
+        {
+            motorLeft.setPower(POWER * multiplier);
+            motorRight.setPower(POWER * multiplier);
+        }
+        else
+        {
+            motorLeft.setPower(0);
+            motorRight.setPower(0);
+        }
+    }
+
     /**
      * Stops the elevator and resets motor run modes and positions.
      */
@@ -129,5 +145,18 @@ public class ErectionSystem {
         }
         motorRight.setPower(0);
         motorLeft.setPower(0);
+    }
+
+
+    public void openErectionByTicks(int ticks){
+        motorRight.setTargetPosition(ticks);
+        motorLeft.setTargetPosition(ticks);
+
+        motorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        motorLeft.setPower(POWER);
+        motorRight.setPower(POWER);
+
     }
 }

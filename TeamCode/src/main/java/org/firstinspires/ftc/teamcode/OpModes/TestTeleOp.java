@@ -35,7 +35,7 @@ public class TestTeleOp extends OpMode {
     @Override
     public void init() {
         claw = new Claw(hardwareMap);
-        drive = new DriveSystem(hardwareMap, gamepad1, 0);
+        drive = new DriveSystem(hardwareMap, gamepad1, 0,telemetry   );
         elevatorSystem = new ElevatorTest(hardwareMap);
         elvatorErectionSystem = new ErectionSystem(hardwareMap);
         // sheiva = new TestSheiva(hardwareMap);
@@ -50,6 +50,9 @@ public class TestTeleOp extends OpMode {
         if (isFildoOn) {
             drive.Drive();
         } else drive.DriveWithoutFildo();
+        telemetry.addData("isFildoOn", isFildoOn);
+        telemetry.update();
+
 
         if (gamepad1.x && !XPressed) {
             XPressed = true;
@@ -78,26 +81,28 @@ public class TestTeleOp extends OpMode {
             BPressed = false;
         }
 
-        elevatorSystem.raisedAndlowerElevator(gamepad1.left_trigger - gamepad1.right_trigger);
+        elvatorErectionSystem.raisedAndlowerErection(gamepad1.right_trigger - gamepad1.left_trigger);
 
         if (gamepad1.right_bumper) {
-            elvatorErectionSystem.raisedErection();
+            elevatorSystem.upperElevator();
         }
         if (gamepad1.left_bumper) {
-            elvatorErectionSystem.lowerErection();
+            elevatorSystem.lowerElevator();
         }
         if (!gamepad1.left_bumper && !gamepad1.right_bumper) {
-            elvatorErectionSystem.stopErection();
+            elevatorSystem.StopElevator();
         }
 
 
         if (gamepad1.right_stick_button && isFildoOn) {
-            isFildoOn = false;
+            claw.closeJoint();
+            elvatorErectionSystem.CloseElevator();
+            elevatorSystem.CloseElevator();
         }
 
         if (gamepad1.left_stick_button && !left_stick_button_Pressed) {
             drive.resetFildo();
-            isFildoOn = true;
+            isFildoOn = !isFildoOn;
             left_stick_button_Pressed = true;
         } else if (!gamepad1.left_stick_button) {
             left_stick_button_Pressed = false;

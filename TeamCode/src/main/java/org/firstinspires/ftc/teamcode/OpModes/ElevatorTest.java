@@ -16,10 +16,10 @@ public class ElevatorTest {
 
     private DcMotor elevator;
     private TouchSensor elevatorMagnet;
-   // private TouchSensor magneticSwitch;
+    // private TouchSensor magneticSwitch;
     private final double Speed = 0.7;
     private final int MAX_HEIGHT = 1000;
-    private final int POWER = 1000;
+    private final int POWER = 1;
 
     /**
      * Constructs a new ElevatorSystem.
@@ -29,7 +29,7 @@ public class ElevatorTest {
     public ElevatorTest(HardwareMap map) {
         elevator = map.dcMotor.get("elevatormotor");
         elevatorMagnet = map.touchSensor.get("elevatorMagnet");
-       // magneticSwitch = map.get(TouchSensor.class, "AE");
+        // magneticSwitch = map.get(TouchSensor.class, "AE");
         elevator.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         elevator.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         elevator.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -39,36 +39,39 @@ public class ElevatorTest {
     /**
      * Extends the elevator.
      */
-    public void raisedAndlowerElevator (double multiplier) {
+    public void raisedAndlowerElevator(double multiplier, Boolean isErectionMIsPressd) {
         elevator.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+            if ((multiplier > 0 && !elevatorMagnet.isPressed()) || (multiplier <= 0 && (!isErectionMIsPressd || elevator.getCurrentPosition()>=-1600))) {
 
-        if (!elevatorMagnet.isPressed() || multiplier <= 0)
-        {
-            elevator.setPower(POWER * multiplier);
-        }
-        else
-        {
+                elevator.setPower(POWER * multiplier);
+
+        }else {
             elevator.setPower(0);
         }
     }
 
-    public void OpenElevator (int ticks) {
-        while (elevator.getCurrentPosition() > -ticks) {
-            elevator.setPower(-1);
-        }
-        elevator.setPower(0);
+    public void OpenElevator(int ticks) {
+        elevator.setTargetPosition(-ticks);
+        elevator.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        elevator.setPower(-POWER);
+    }
 
+    public void upperElevator() {
+        if (elevator.getCurrentPosition() >= -2400) {
+            elevator.setPower(-0.8);
+        } else {
+            elevator.setPower(0);
+        }
     }
 
     /**
      * Lowers the elevator if the magnetic switch is not pressed.
      */
-    public void LowerElevator() {
+    public void lowerElevator() {
         if (!elevatorMagnet.isPressed()) {
             elevator.setPower(0.8);
-        }
-        else {
+        } else {
             elevator.setPower(0);
         }
     }
@@ -80,7 +83,7 @@ public class ElevatorTest {
         elevator.setPower(0);
     }
 
-    public int getTicks(){
+    public int getTicks() {
         return elevator.getCurrentPosition();
     }
 
@@ -96,7 +99,7 @@ public class ElevatorTest {
                 isPassedTime[0] = true;
             }
         }).start();
-        while (!isPassedTime[0]&& !elevatorMagnet.isPressed()) {
+        while (!isPassedTime[0] && !elevatorMagnet.isPressed()) {
             elevator.setPower(Speed);
         }
         elevator.setPower(0);
