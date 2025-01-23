@@ -54,7 +54,6 @@ public class Claw {
     }
 
     public void closeJoint() {
-
-        clawJoint.setPosition(MID);
+        clawJoint.setPosition(MIN);
     }
 }
