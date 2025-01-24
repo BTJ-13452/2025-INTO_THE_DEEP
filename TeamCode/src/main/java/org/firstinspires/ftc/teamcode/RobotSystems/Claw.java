@@ -17,8 +17,8 @@ public class Claw {
         servoClawL = map.servo.get("ClawL");
         servoClawR = map.servo.get("ClawR");
         clawJoint = map.servo.get("ClawJ");
-        servoClawR.setPosition(MAX);
-        servoClawL.setPosition(MIN);
+        servoClawR.setPosition(MIN);
+        servoClawL.setPosition(MAX);
         clawJoint.setPosition(MIN);
     }
 

@@ -37,7 +37,7 @@ public class TestTeleOp extends OpMode {
         claw = new Claw(hardwareMap);
         drive = new DriveSystem(hardwareMap, gamepad1, 0,telemetry   );
         elevatorSystem = new ElevatorTest(hardwareMap);
-        elvatorErectionSystem = new ErectionSystem(hardwareMap);
+        elvatorErectionSystem = new ErectionSystem(hardwareMap, true);
         // sheiva = new TestSheiva(hardwareMap);
         hung = new Hung(hardwareMap);
     }

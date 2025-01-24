@@ -29,7 +29,7 @@ public class ErectionSystem {
      *
      * @param map The HardwareMap object used to initialize hardware components.
      */
-    public ErectionSystem(HardwareMap map) {
+    public ErectionSystem(HardwareMap map, boolean tele) {
         // Motor initialization
         motorRight = map.get(DcMotor.class, RIGHT_MOTOR_CONFIGURE);
         motorLeft = map.get(DcMotor.class, LEFT_MOTOR_CONFIGURE);
@@ -41,23 +41,12 @@ public class ErectionSystem {
         motorLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         motorRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        motorLeft.setDirection(DcMotorSimple.Direction.FORWARD);
 
         // Set motors to zero position
-        CloseElevator();
-
-        // Motor run modes and encoder setup
-        motorRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        motorLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        motorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-
-        motorRight.setTargetPosition(0);
-        motorLeft.setTargetPosition(0);
-
-        motorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        if(tele){
+            CloseElevator();
+        }
     }
 
 //    public ElevatorErectionSystem(HardwareMap map) {
@@ -145,8 +134,20 @@ public class ErectionSystem {
         }
         motorRight.setPower(0);
         motorLeft.setPower(0);
-    }
 
+        motorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        // Motor run modes and encoder setup
+        motorRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        motorRight.setTargetPosition(0);
+        motorLeft.setTargetPosition(0);
+
+        motorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
 
     public void openErectionByTicks(int ticks){
         motorRight.setTargetPosition(ticks);
@@ -159,4 +160,18 @@ public class ErectionSystem {
         motorRight.setPower(POWER);
 
     }
+
+    public void erectionbyticks(int ticks){
+
+        motorLeft.setTargetPosition(ticks);
+        motorRight.setTargetPosition(ticks);
+
+        motorRight.setPower(POWER);
+        motorLeft.setPower(POWER);
+
+        motorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+    }
+
 }

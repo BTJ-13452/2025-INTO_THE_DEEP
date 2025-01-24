@@ -109,4 +109,13 @@ public class ElevatorTest {
         }
         elevator.setPower(0);
     }
+
+    public void elevatorbyticks(int ticks){
+        elevator.setTargetPosition(-ticks);
+
+        elevator.setPower(POWER);
+
+        elevator.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+    }
 }

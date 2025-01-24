@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.RobotSystems;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
@@ -14,6 +13,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 public class DriveSystem {
+
+    double speed = 0.1;
 
     private DcMotor leftFrontDrive;
     private DcMotor leftBackDrive;
@@ -56,6 +57,54 @@ public class DriveSystem {
         imu.resetYaw();
     }
 
+    public DriveSystem(HardwareMap map, Telemetry telemetry) {
+        leftBackDrive = map.get(DcMotor.class, "BL");
+        leftFrontDrive = map.get(DcMotor.class, "FL");
+        rightBackDrive = map.get(DcMotor.class, "BR");
+        rightFrontDrive = map.get(DcMotor.class, "FR");
+
+        leftBackDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        leftFrontDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+
+
+        leftFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        this.telemetry = telemetry;
+
+        leftFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        leftBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        leftFrontDrive.setTargetPosition(0);
+        leftBackDrive.setTargetPosition(0);
+        rightFrontDrive.setTargetPosition(0);
+        rightBackDrive.setTargetPosition(0);
+
+        rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        rightFrontDrive.setPower(speed);
+        rightBackDrive.setPower(speed);
+        leftBackDrive.setPower(speed);
+        leftFrontDrive.setPower(speed);
+
+
+        imu = map.get(IMU.class, "imu");
+        imu.resetYaw();
+    }
+
     public void resetFildo() {
         imu.resetYaw();
     }
@@ -66,7 +115,6 @@ public class DriveSystem {
         angles = imu.getRobotOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
         double zeroDYaw = angles.firstAngle - startAngel;
-        telemetry.addData("angle", zeroDYaw);
 
         double x = gamepad.left_stick_x;
         double y = -gamepad.left_stick_y;
@@ -128,5 +176,32 @@ public class DriveSystem {
         leftBackDrive.setPower(leftBack);
         rightBackDrive.setPower(rightBack);
     }
+
+    public void forward(int tick) {
+        rightFrontDrive.setTargetPosition(tick);
+        rightBackDrive.setTargetPosition(tick);
+        leftFrontDrive.setTargetPosition(tick);
+        leftBackDrive.setTargetPosition(tick);
+
+        rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+
+    public void drivesidebyticks(int tick) {
+        rightFrontDrive.setTargetPosition(tick);
+        rightBackDrive.setTargetPosition(-tick);
+        leftFrontDrive.setTargetPosition(-tick);
+        leftBackDrive.setTargetPosition(tick);
+
+        rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+
+
+
 
 }
