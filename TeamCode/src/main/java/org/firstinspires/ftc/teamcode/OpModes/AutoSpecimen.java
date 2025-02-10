@@ -11,11 +11,16 @@ import org.firstinspires.ftc.teamcode.RobotSystems.Hung;
 
 @Autonomous
 public class AutoSpecimen extends OpMode {
+    @Override
+    public void loop() {
+    }
+
     DriveSystem drive;
     ErectionSystem erection;
     ElevatorTest elevator;
     Claw claw;
-    DriveSystem driveside;
+
+    boolean active;
 
     @Override
     public void init() {
@@ -25,21 +30,29 @@ public class AutoSpecimen extends OpMode {
         erection = new ErectionSystem(hardwareMap, false);
         elevator = new ElevatorTest(hardwareMap);
         claw = new Claw(hardwareMap);
-        driveside = new DriveSystem(hardwareMap,telemetry );
+
+        active = true;
     }
 
     @Override
     public void start() {
-        drive.forward(-150);
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                while(active){
+//                    drive.printTata();
+//                }
+//            }
+//        }).run();
+        drive.forward(650);
         sleep(1000);
         erection.CloseElevator();
         sleep(1000);
-        drive.forward(-500);
-        erection.erectionbyticks(2050);
+        erection.erectionbyticks(700);
         sleep(1000);
-        elevator.elevatorbyticks(700);
+        elevator.elevatorbyticks(1100);
         sleep(1000);
-        erection.erectionbyticks(1700);
+        erection.erectionbyticks(500);
         sleep(1000);
         claw.frontClose();
         sleep(1000);
@@ -47,15 +60,13 @@ public class AutoSpecimen extends OpMode {
         sleep(1000);
         erection.CloseElevator();
         sleep(1000);
-        drive.forward(0);
-        sleep(1000);
-        drive.drivesidebyticks(1500);
-
-
+        drive.drivesidebyticks(-1500);
     }
 
     @Override
-    public void loop() {
-        //
+    public void stop() {
+        active = false;
     }
+
+
 }
