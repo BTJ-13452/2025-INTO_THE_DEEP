@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.RobotSystems;
 
+import static android.os.SystemClock.sleep;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -14,7 +16,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 public class DriveSystem {
 
-    double speed = 0.1;
+    double speed = 0.4;
 
     private DcMotor leftFrontDrive;
     private DcMotor leftBackDrive;
@@ -57,7 +59,7 @@ public class DriveSystem {
         imu.resetYaw();
     }
 
-    public DriveSystem(HardwareMap map, Telemetry telemetry) {
+    public DriveSystem(HardwareMap map, Telemetry telemetry, boolean isBasket) {
         leftBackDrive = map.get(DcMotor.class, "BL");
         leftFrontDrive = map.get(DcMotor.class, "FL");
         rightBackDrive = map.get(DcMotor.class, "BR");
@@ -67,7 +69,9 @@ public class DriveSystem {
 
         leftFrontDrive.setDirection(DcMotorSimple.Direction.REVERSE);
 
-
+        if (isBasket){
+            speed = 0.5;
+        }
         leftFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -189,7 +193,7 @@ public class DriveSystem {
         leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
-    public void drivesidebyticks(int tick) {
+    public void driveLeftbyticks(int tick) {
         rightFrontDrive.setTargetPosition(tick);
         rightBackDrive.setTargetPosition(-tick);
         leftFrontDrive.setTargetPosition(-tick);
@@ -200,8 +204,54 @@ public class DriveSystem {
         leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
+    public void driveRightbyticks(int tick) {
+        rightFrontDrive.setTargetPosition(-tick);
+        rightBackDrive.setTargetPosition(tick);
+        leftFrontDrive.setTargetPosition(tick);
+        leftBackDrive.setTargetPosition(-tick);
+
+        rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
 
 
+    public void printTata(){
+        telemetry.addData("lb",leftBackDrive.getCurrentPosition());
+        telemetry.addData("lf",leftFrontDrive.getCurrentPosition());
+        telemetry.addData("rb",rightBackDrive.getCurrentPosition());
+        telemetry.addData("rf",rightFrontDrive.getCurrentPosition());
+        telemetry.update();
+    }
+    public void ResetEncoder() {
+        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
+    }
+    public void SpinRight(int tick){
+        rightFrontDrive.setTargetPosition(-tick);
+        rightBackDrive.setTargetPosition(-tick);
+        leftFrontDrive.setTargetPosition(tick);
+        leftBackDrive.setTargetPosition(tick);
+
+        rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+    public void SpinLeft(int tick){
+        rightFrontDrive.setTargetPosition(tick);
+        rightBackDrive.setTargetPosition(tick);
+        leftFrontDrive.setTargetPosition(-tick);
+        leftBackDrive.setTargetPosition(-tick);
+
+        rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
 
 }

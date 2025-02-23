@@ -7,7 +7,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class Claw {
 
     final private double MAX = 1;
-    final private double MID = 0.5;
+    final private double MID = 0.3;
+    final private double MID2 = 0.5;
     final private double MIN = 0;
     public Servo servoClawL;
     public Servo servoClawR;
@@ -23,13 +24,14 @@ public class Claw {
     }
 
     public void frontClose() {
+
         if (servoClawR.getPosition() == MID) {
             servoClawR.setPosition(MIN);
             servoClawL.setPosition(MAX);
 
         } else {
             servoClawR.setPosition(MID);
-            servoClawL.setPosition(MID);
+            servoClawL.setPosition(1 - MID);
         }
     }
 
@@ -45,11 +47,11 @@ public class Claw {
     }
 
     public void openJoint() {
-        if (clawJoint.getPosition() == MID) {
+        if (clawJoint.getPosition() == MID2) {
             clawJoint.setPosition(MIN);
 
         } else {
-            clawJoint.setPosition(MID);
+            clawJoint.setPosition(MID2);
         }
     }
 

@@ -13,11 +13,14 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
  * The ElevatorSystem class represents the robot's elevator system.
  */
 public class ElevatorTest {
-
-    private DcMotor elevator;
+    boolean opmodisactive = true;
+    final int FIRST_RANGE = 550;
+    final int SECOND_RANGE = 4000;
+    public DcMotor elevator;
+    public DcMotor elevator2;
     private TouchSensor elevatorMagnet;
     // private TouchSensor magneticSwitch;
-    private final double Speed = 0.7;
+    private final double Speed = 1;
     private final int MAX_HEIGHT = 1000;
     private final int POWER = 1;
 
@@ -28,11 +31,15 @@ public class ElevatorTest {
      */
     public ElevatorTest(HardwareMap map) {
         elevator = map.dcMotor.get("elevatormotor");
+        elevator2 = map.dcMotor.get("elevatormotor2");
         elevatorMagnet = map.touchSensor.get("elevatorMagnet");
         // magneticSwitch = map.get(TouchSensor.class, "AE");
         elevator.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         elevator.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         elevator.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        elevator2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        elevator2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        elevator2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         CloseElevator();
     }
 
@@ -42,11 +49,11 @@ public class ElevatorTest {
     public void raisedAndlowerElevator(double multiplier, Boolean isErectionMIsPressd) {
         elevator.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-            if ((multiplier > 0 && !elevatorMagnet.isPressed()) || (multiplier <= 0 && (!isErectionMIsPressd || elevator.getCurrentPosition()>=-1600))) {
+        if ((multiplier > 0 && !elevatorMagnet.isPressed()) || (multiplier <= 0 && (!isErectionMIsPressd || elevator.getCurrentPosition() >= -1538))) {
 
-                elevator.setPower(POWER * multiplier);
+            elevator.setPower(POWER * multiplier);
 
-        }else {
+        } else {
             elevator.setPower(0);
         }
     }
@@ -57,16 +64,18 @@ public class ElevatorTest {
         elevator.setPower(-POWER);
     }
 
-    public void upperElevator(boolean isErectionMIsPressd) {
-        if (elevator.getCurrentPosition() >= -2500) {
-            if (!isErectionMIsPressd || elevator.getCurrentPosition()>=-1600) {
-                elevator.setPower(-0.8);
-            }
-            else{
+    public void upperElevator(int isErectionMIsPressd) {
+        if (elevator.getCurrentPosition() >= -3075) {
+            if ((isErectionMIsPressd >= FIRST_RANGE) || elevator.getCurrentPosition() >= -1538 )  {
+                elevator.setPower(-Speed);
+                elevator2.setPower(-Speed);
+            } else {
                 elevator.setPower(0);
+                elevator2.setPower(0);
             }
         } else {
             elevator.setPower(0);
+            elevator2.setPower(0);
         }
     }
 
@@ -75,9 +84,11 @@ public class ElevatorTest {
      */
     public void lowerElevator() {
         if (!elevatorMagnet.isPressed()) {
-            elevator.setPower(0.8);
+            elevator.setPower(Speed);
+            elevator2.setPower(Speed);
         } else {
             elevator.setPower(0);
+            elevator2.setPower(0);
         }
     }
 
@@ -86,6 +97,7 @@ public class ElevatorTest {
      */
     public void StopElevator() {
         elevator.setPower(0);
+        elevator2.setPower(0);
     }
 
     public int getTicks() {
@@ -106,16 +118,29 @@ public class ElevatorTest {
         }).start();
         while (!isPassedTime[0] && !elevatorMagnet.isPressed()) {
             elevator.setPower(Speed);
+            elevator2.setPower(Speed);
         }
         elevator.setPower(0);
+        elevator2.setPower(0);
     }
 
-    public void elevatorbyticks(int ticks){
+    public void CloseElevator2() {
+        while (opmodisactive) {
+            elevator.setPower(1);
+            elevator2.setPower(1);
+        }
+        elevator.setPower(0);
+        elevator2.setPower(0);
+    }
+
+    public void elevatorbyticks(int ticks) {
         elevator.setTargetPosition(-ticks);
+        elevator2.setTargetPosition(-ticks);
 
         elevator.setPower(POWER);
+        elevator2.setPower(POWER);
 
         elevator.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
+        elevator2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 }

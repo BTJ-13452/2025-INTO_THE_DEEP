@@ -20,7 +20,7 @@ public class ErectionSystem {
 
     final double POWER = 0.7;
 
-    DcMotor motorRight;
+   public DcMotor motorRight;
     DcMotor motorLeft;
     public TouchSensor erectionMagnet;
 
@@ -89,7 +89,7 @@ public class ErectionSystem {
         motorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        if (!erectionMagnet.isPressed() || multiplier >= 0)
+        if ((!erectionMagnet.isPressed() || multiplier >= 0) && (motorRight.getCurrentPosition() <= 1600 || multiplier <= 0))
         {
             motorLeft.setPower(POWER * multiplier);
             motorRight.setPower(POWER * multiplier);
@@ -150,6 +150,9 @@ public class ErectionSystem {
     }
 
     public void openErectionByTicks(int ticks){
+        motorRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         motorRight.setTargetPosition(ticks);
         motorLeft.setTargetPosition(ticks);
 
@@ -158,6 +161,7 @@ public class ErectionSystem {
 
         motorLeft.setPower(POWER);
         motorRight.setPower(POWER);
+
 
     }
 
@@ -172,6 +176,10 @@ public class ErectionSystem {
         motorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
+    }
+
+    public int getPosition(){
+        return motorRight.getCurrentPosition();
     }
 
 }

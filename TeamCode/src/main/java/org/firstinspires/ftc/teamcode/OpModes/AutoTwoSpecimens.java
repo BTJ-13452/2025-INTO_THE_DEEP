@@ -1,4 +1,3 @@
-
 package org.firstinspires.ftc.teamcode.OpModes;
 
 import static android.os.SystemClock.sleep;
@@ -16,19 +15,15 @@ public class AutoTwoSpecimens extends OpMode {
     ErectionSystem erection;
     ElevatorTest elevator;
     Claw claw;
-
 //    boolean active;
-
-
     @Override
     public void init() {
         new Hung(hardwareMap);
 
-        drive = new DriveSystem(hardwareMap,telemetry);
+        drive = new DriveSystem(hardwareMap,telemetry,false);
         erection = new ErectionSystem(hardwareMap, false);
         elevator = new ElevatorTest(hardwareMap);
         claw = new Claw(hardwareMap);
-
 //        active=true;
     }
 
@@ -48,21 +43,20 @@ public class AutoTwoSpecimens extends OpMode {
         sleep(1000);
         erection.erectionbyticks(2000);
         sleep(1000);
-        elevator.elevatorbyticks(650);
+        elevator.elevatorbyticks(908);
         sleep(1000);
-        erection.erectionbyticks(1650);
+        erection.erectionbyticks(1550);
         sleep(1000);
         claw.frontClose();
         sleep(1000);
         elevator.elevatorbyticks(0);
         sleep(1000);
-        drive.forward(-50);
-        sleep(1000);
+        //first
         drive.forward(0);
+        sleep(2000);
+        drive.driveLeftbyticks(1350);
         sleep(1000);
-        drive.drivesidebyticks(1350);
-        sleep(1000);
-        erection.erectionbyticks(100);
+        erection.erectionbyticks(115);
         sleep(3000);
         claw.frontClose();
         sleep(1000);
@@ -71,11 +65,11 @@ public class AutoTwoSpecimens extends OpMode {
         drive.forward(-550);
         sleep(3000);
         drive.ResetEncoder();
-        drive.drivesidebyticksanother(300);
+        drive.driveRightbyticks(300);
         sleep(1000);
         erection.erectionbyticks(1800);
         sleep(1000);
-        elevator.elevatorbyticks(550);
+        elevator.elevatorbyticks(706);
         sleep(1000);
         erection.erectionbyticks(1450);
         sleep(1000);
@@ -87,17 +81,7 @@ public class AutoTwoSpecimens extends OpMode {
         sleep(1500);
         drive.ResetEncoder();
         sleep(1000);
-        drive.drivesidebyticks(1350);
-
-
-
-
-
-
-
-
-
-
+        drive.driveLeftbyticks(1350);
     }
 
     @Override
