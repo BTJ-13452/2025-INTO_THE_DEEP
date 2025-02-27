@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.RobotSystems;
 
 import static android.os.SystemClock.sleep;
 
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -57,6 +58,7 @@ public class DriveSystem {
 
         imu = map.get(IMU.class, "imu");
         imu.resetYaw();
+
     }
 
     public DriveSystem(HardwareMap map, Telemetry telemetry, boolean isBasket) {
@@ -66,10 +68,9 @@ public class DriveSystem {
         rightFrontDrive = map.get(DcMotor.class, "FR");
 
         leftBackDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-
         leftFrontDrive.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        if (isBasket){
+        if (isBasket) {
             speed = 0.5;
         }
         leftFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -85,19 +86,22 @@ public class DriveSystem {
         rightBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
+        leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
         leftFrontDrive.setTargetPosition(0);
+        rightBackDrive.setTargetPosition(0);
         leftBackDrive.setTargetPosition(0);
         rightFrontDrive.setTargetPosition(0);
-        rightBackDrive.setTargetPosition(0);
+
 
         rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
         rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         rightFrontDrive.setPower(speed);
         rightBackDrive.setPower(speed);
@@ -112,7 +116,6 @@ public class DriveSystem {
     public void resetFildo() {
         imu.resetYaw();
     }
-
 
 
     public void Drive() {
@@ -204,6 +207,7 @@ public class DriveSystem {
         leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
+
     public void driveRightbyticks(int tick) {
         rightFrontDrive.setTargetPosition(-tick);
         rightBackDrive.setTargetPosition(tick);
@@ -217,13 +221,14 @@ public class DriveSystem {
     }
 
 
-    public void printTata(){
-        telemetry.addData("lb",leftBackDrive.getCurrentPosition());
-        telemetry.addData("lf",leftFrontDrive.getCurrentPosition());
-        telemetry.addData("rb",rightBackDrive.getCurrentPosition());
-        telemetry.addData("rf",rightFrontDrive.getCurrentPosition());
+    public void printTata() {
+        telemetry.addData("lb", leftBackDrive.getCurrentPosition());
+        telemetry.addData("lf", leftFrontDrive.getCurrentPosition());
+        telemetry.addData("rb", rightBackDrive.getCurrentPosition());
+        telemetry.addData("rf", rightFrontDrive.getCurrentPosition());
         telemetry.update();
     }
+
     public void ResetEncoder() {
         rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -231,7 +236,8 @@ public class DriveSystem {
         leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
     }
-    public void SpinRight(int tick){
+
+    public void SpinRight(int tick) {
         rightFrontDrive.setTargetPosition(-tick);
         rightBackDrive.setTargetPosition(-tick);
         leftFrontDrive.setTargetPosition(tick);
@@ -242,7 +248,8 @@ public class DriveSystem {
         leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
-    public void SpinLeft(int tick){
+
+    public void SpinLeft(int tick) {
         rightFrontDrive.setTargetPosition(tick);
         rightBackDrive.setTargetPosition(tick);
         leftFrontDrive.setTargetPosition(-tick);
@@ -254,4 +261,28 @@ public class DriveSystem {
         leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
+    public double getOdometryStraightPosition() {
+        return rightBackDrive.getCurrentPosition();
+    }
+
+    public double getOdometrySidePosition() {
+        return leftFrontDrive.getCurrentPosition();
+    }
+
+    public void forward_by_odometry(int tick) {
+        leftFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        while (!(rightBackDrive.getCurrentPosition() < tick + 30 && rightBackDrive.getCurrentPosition() > tick - 30)) {
+            rightBackDrive.setPower(0.5);
+            rightFrontDrive.setPower(0.5);
+            leftBackDrive.setPower(0.5);
+            leftFrontDrive.setPower(0.5);
+        }
+        rightBackDrive.setPower(0);
+        rightFrontDrive.setPower(0);
+        leftBackDrive.setPower(0);
+        leftFrontDrive.setPower(0);
+    }
 }

@@ -8,8 +8,8 @@ public class Hung {
 
     final private double MAX = 1;
     final private double MIN = 0;
-    final private double MAX2 = 0;
-    final private double MIN2 = 1;
+    final private double MAX2 = 0.2;
+    final private double MIN2 = 0.6;
     public Servo servoHung;
     public Servo servoHung2;
 

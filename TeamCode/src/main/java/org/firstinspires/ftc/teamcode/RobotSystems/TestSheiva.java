@@ -17,7 +17,7 @@ public class TestSheiva {
 
     public TestSheiva(HardwareMap map) {
 
-//        servo = map.get(CRServo.class, "sheiva");
+       servo = map.get(CRServo.class, "sheiva");
        // distanceSensor = map.get(DistanceSensor.class,"dish");
         suctionIsON = false;
         suctionIsReversed = false;

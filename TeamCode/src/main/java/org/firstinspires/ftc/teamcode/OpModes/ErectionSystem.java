@@ -150,17 +150,17 @@ public class ErectionSystem {
     }
 
     public void openErectionByTicks(int ticks){
-        motorRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        motorLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         motorRight.setTargetPosition(ticks);
         motorLeft.setTargetPosition(ticks);
 
+        motorLeft.setPower(POWER);
+        motorRight.setPower(POWER);
+
         motorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        motorLeft.setPower(POWER);
-        motorRight.setPower(POWER);
+
 
 
     }
