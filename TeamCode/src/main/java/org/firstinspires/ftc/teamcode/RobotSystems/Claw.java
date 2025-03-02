@@ -88,7 +88,7 @@ public class Claw {
     }
 
         public Boolean isDS_see(){
-        return distanceSensor.getDistance(DistanceUnit.CM) < 4.5;
+        return distanceSensor.getDistance(DistanceUnit.CM) < 3.2;
         }
 }
 

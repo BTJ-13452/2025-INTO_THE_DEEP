@@ -65,6 +65,8 @@ public class ElevatorTest {
     }
 
     public void upperElevator(int isErectionMIsPressd) {
+        elevator.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        elevator2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         if (elevator.getCurrentPosition() >= -3075) {
             if ((isErectionMIsPressd >= FIRST_RANGE) || elevator.getCurrentPosition() >= -1538 )  {
                 elevator.setPower(-Speed);
@@ -83,6 +85,8 @@ public class ElevatorTest {
      * Lowers the elevator if the magnetic switch is not pressed.
      */
     public void lowerElevator() {
+        elevator.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        elevator2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         if (!elevatorMagnet.isPressed()) {
             elevator.setPower(Speed);
             elevator2.setPower(Speed);
@@ -108,6 +112,8 @@ public class ElevatorTest {
      * Closes the elevator until the magnetic switch is pressed.
      */
     public void CloseElevator() {
+        elevator.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        elevator2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         final boolean[] isPassedTime = {false};
         new Thread(new Runnable() {
             @Override

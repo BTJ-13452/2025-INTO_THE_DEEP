@@ -17,7 +17,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 public class DriveSystem {
 
-    double speed = 0.4;
+    double speed = 0.1;
 
     private DcMotor leftFrontDrive;
     private DcMotor leftBackDrive;
@@ -71,7 +71,7 @@ public class DriveSystem {
         leftFrontDrive.setDirection(DcMotorSimple.Direction.REVERSE);
 
         if (isBasket) {
-            speed = 0.5;
+            speed = 0.1;
         }
         leftFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -80,33 +80,33 @@ public class DriveSystem {
 
         this.telemetry = telemetry;
 
-        leftFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        leftBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        leftFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        leftBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        rightFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        rightBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//
+//        leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//
+//        leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        leftFrontDrive.setTargetPosition(0);
-        rightBackDrive.setTargetPosition(0);
-        leftBackDrive.setTargetPosition(0);
-        rightFrontDrive.setTargetPosition(0);
-
-
-        rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        rightFrontDrive.setPower(speed);
-        rightBackDrive.setPower(speed);
-        leftBackDrive.setPower(speed);
-        leftFrontDrive.setPower(speed);
+//        leftFrontDrive.setTargetPosition(0);
+//        rightBackDrive.setTargetPosition(0);
+//        leftBackDrive.setTargetPosition(0);
+//        rightFrontDrive.setTargetPosition(0);
+//
+//
+//        rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//
+//        rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//
+//        rightFrontDrive.setPower(speed);
+//        rightBackDrive.setPower(speed);
+//        leftBackDrive.setPower(speed);
+//        leftFrontDrive.setPower(speed);
 
 
         imu = map.get(IMU.class, "imu");
@@ -229,12 +229,22 @@ public class DriveSystem {
         telemetry.update();
     }
 
-    public void ResetEncoder() {
+    public void resetEncoder() {
+        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    }
+    public void resetEncoder2() {
         rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
+        leftFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     public void SpinRight(int tick) {
@@ -273,16 +283,56 @@ public class DriveSystem {
         leftFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         while (!(rightBackDrive.getCurrentPosition() < tick + 30 && rightBackDrive.getCurrentPosition() > tick - 30)) {
-            rightBackDrive.setPower(0.5);
-            rightFrontDrive.setPower(0.5);
-            leftBackDrive.setPower(0.5);
-            leftFrontDrive.setPower(0.5);
+            rightBackDrive.setPower(speed);
+            rightFrontDrive.setPower(speed);
+            leftBackDrive.setPower(speed);
+            leftFrontDrive.setPower(speed);
         }
         rightBackDrive.setPower(0);
         rightFrontDrive.setPower(0);
         leftBackDrive.setPower(0);
         leftFrontDrive.setPower(0);
     }
+    public void driveByPower(double power){
+        rightBackDrive.setPower(power);
+        rightFrontDrive.setPower(power);
+        leftBackDrive.setPower(power);
+        leftFrontDrive.setPower(power);
+    }
+
+    public void driveByPID(double power){
+
+        double zeroDYaw = initYaw;
+
+        double x = 0;
+        double y = power;
+        double turn = 0;
+
+        double theta = Math.atan2(y, x) * 180 / Math.PI;
+        double realtheta;
+        realtheta = (360 - zeroDYaw) + theta;
+        power = Math.hypot(x, y);
+
+        double sin = Math.sin((realtheta * (Math.PI / 180)) - (Math.PI / 4));
+        double cos = Math.cos((realtheta * (Math.PI / 180)) - (Math.PI / 4));
+        double maxsincos = Math.max(Math.abs(sin), Math.abs(cos));
+
+        double leftFront = (power * cos / maxsincos + turn);
+        double rightFront = (power * sin / maxsincos - turn);
+        double leftBack = (power * sin / maxsincos + turn);
+        double rightBack = (power * cos / maxsincos - turn);
+        if ((power + Math.abs(turn)) > 1) {
+            leftFront /= power + turn;
+            rightFront /= power - turn;
+            leftBack /= power + turn;
+            rightBack /= power - turn;
+        }
+        leftFrontDrive.setPower(leftFront);
+        rightFrontDrive.setPower(rightFront);
+        leftBackDrive.setPower(leftBack);
+        rightBackDrive.setPower(rightBack);
+    }
+
 }
