@@ -12,8 +12,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 public class Claw {
 
     public boolean isInside = false;
-    final private double MAX = -0.35;
-    final private double MAXOUT = 0.8;
+    final private double MAX = 1;
+    final private double MAXOUT = -0.25;
     final private double MID = 0.3;
     final private double MID2 = 0.5;
     final private double MIN = 0;
@@ -21,12 +21,15 @@ public class Claw {
     public CRServo servoClawR;
     public Servo clawJoint;
     public DistanceSensor distanceSensor;
+    public DistanceSensor distanceSensor2;
 
     public Claw(HardwareMap map) {
         servoClawL = map.get(CRServo.class, "ClawL");
         servoClawR = map.get(CRServo.class, "ClawR");
         clawJoint = map.servo.get("ClawJ");
         distanceSensor = map.get(DistanceSensor.class, "distanceSensor");
+        distanceSensor2 = map.get(DistanceSensor.class, "distanceSensor2");
+
 
     }
 
@@ -35,7 +38,7 @@ public class Claw {
             servoClawR.setPower(-MAX);
             servoClawL.setPower(MAX);
         } else {
-           stop();
+            stop();
         }
     }
 
@@ -44,7 +47,7 @@ public class Claw {
             servoClawR.setPower(-MAXOUT);
             servoClawL.setPower(MAXOUT);
         } else {
-           stop();
+            stop();
         }
     }
 
@@ -87,8 +90,8 @@ public class Claw {
         servoClawL.setPower(MAXOUT);
     }
 
-        public Boolean isDS_see(){
-        return distanceSensor.getDistance(DistanceUnit.CM) < 3.2;
-        }
+    public Boolean isDS_see() {
+        return distanceSensor.getDistance(DistanceUnit.CM) < 3.2 && distanceSensor2.getDistance(DistanceUnit.CM) < 3.2;
+    }
 }
 

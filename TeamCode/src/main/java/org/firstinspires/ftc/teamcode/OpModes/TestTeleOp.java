@@ -39,6 +39,8 @@ public class TestTeleOp extends OpMode {
     private boolean isElevatorOn_2383 = false;
     private boolean left_stick_button_Pressed = false;
     private boolean isCloseReset = false;
+    int erectionAutomation = 1660;
+    int elevatorAutomation = 2400;
 
     ElevatorTest elevatorSystem;
     ErectionSystem elvatorErectionSystem;
@@ -202,20 +204,16 @@ public class TestTeleOp extends OpMode {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    elvatorErectionSystem.openErectionByTicks(1450);
+                    elvatorErectionSystem.openErectionByTicks(erectionAutomation);
                     sleep(500);
-                    elevatorSystem.elevatorbyticks(2400);
+                    elevatorSystem.elevatorbyticks(elevatorAutomation);
                 }
             }).start();
         }
-
-
-//        telemetry.addData("gilad", elvatorErectionSystem.getPosition());
-//        telemetry.update();
-        if (elvatorErectionSystem.getPosition() <= 1452 && elvatorErectionSystem.getPosition() >= 1448) {
+        if (elvatorErectionSystem.getPosition() <= erectionAutomation + 2 && elvatorErectionSystem.getPosition() >= erectionAutomation - 2) {
             isErectionOn_1450 = false;
         }
-        if (-elevatorSystem.getTicks() <= 2405 && -elevatorSystem.getTicks() >= 2395){
+        if (-elevatorSystem.getTicks() <= elevatorAutomation + 5 && -elevatorSystem.getTicks() >= elevatorAutomation - 5){
             isElevatorOn_2383 = false;
         }
 //        if (sheiva.distanceSensor.getDistance(DistanceUnit.CM) < 4 && !sampleIn) {

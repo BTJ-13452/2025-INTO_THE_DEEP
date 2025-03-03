@@ -1,9 +1,7 @@
 package org.firstinspires.ftc.teamcode.RobotSystems;
 
-import static android.os.SystemClock.sleep;
-
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -17,7 +15,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 public class DriveSystem {
 
-    double speed = 0.1;
+    double speed = 0.4;
 
     private DcMotor leftFrontDrive;
     private DcMotor leftBackDrive;
@@ -64,14 +62,14 @@ public class DriveSystem {
     public DriveSystem(HardwareMap map, Telemetry telemetry, boolean isBasket) {
         leftBackDrive = map.get(DcMotor.class, "BL");
         leftFrontDrive = map.get(DcMotor.class, "FL");
-        rightBackDrive = map.get(DcMotor.class, "BR");
+        rightBackDrive = map.get(DcMotorEx.class, "BR");
         rightFrontDrive = map.get(DcMotor.class, "FR");
 
         leftBackDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         leftFrontDrive.setDirection(DcMotorSimple.Direction.REVERSE);
 
         if (isBasket) {
-            speed = 0.1;
+            speed = 0.5;
         }
         leftFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -227,6 +225,7 @@ public class DriveSystem {
         telemetry.addData("rb", rightBackDrive.getCurrentPosition());
         telemetry.addData("rf", rightFrontDrive.getCurrentPosition());
         telemetry.update();
+
     }
 
     public void resetEncoder() {
@@ -235,6 +234,7 @@ public class DriveSystem {
         leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
+
     public void resetEncoder2() {
         rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -275,6 +275,11 @@ public class DriveSystem {
         return rightBackDrive.getCurrentPosition();
     }
 
+    public double getRightFrontPosition() {
+        return rightFrontDrive.getCurrentPosition();
+    }
+
+
     public double getOdometrySidePosition() {
         return leftFrontDrive.getCurrentPosition();
     }
@@ -295,20 +300,23 @@ public class DriveSystem {
         leftBackDrive.setPower(0);
         leftFrontDrive.setPower(0);
     }
-    public void driveByPower(double power){
+
+    public void driveByPower(double power) {
         rightBackDrive.setPower(power);
         rightFrontDrive.setPower(power);
         leftBackDrive.setPower(power);
         leftFrontDrive.setPower(power);
     }
 
-    public void driveByPID(double power){
+    public void driveByPID(double power, double i) {
 
-        double zeroDYaw = initYaw;
+        angles = imu.getRobotOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+
+        double zeroDYaw = angles.firstAngle - startAngel;
 
         double x = 0;
         double y = power;
-        double turn = 0;
+        double turn = 0 + angles.firstAngle / 100;
 
         double theta = Math.atan2(y, x) * 180 / Math.PI;
         double realtheta;
@@ -335,4 +343,62 @@ public class DriveSystem {
         rightBackDrive.setPower(rightBack);
     }
 
+    public String getAngel() {
+        return imu.getRobotAngularVelocity(AngleUnit.DEGREES).toString();
+    }
+
+    public void driveByEncoder(double power, double angleDegrees, int CM, int angleAheadDegrees) {
+// 9.6 CM Koter
+// 9.6 * PI = Hekef
+// Hekef = 30.16
+// encoder for one round = 537.6
+// (30.16 / 537.6) * encoder = CM
+// 0.0561 * encoder = CM
+// encoder = CM / 0.0561
+        double encoder = CM / 0.0561;
+        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        double y = -(power *
+                Math.sin(Math.toRadians(-angleDegrees) + Math.PI / 2));
+        double x = -(power *
+                Math.cos(Math.toRadians(-angleDegrees) + Math.PI / 2));
+        double rx = -(angleAheadDegrees - getAngle()) * 0.01;
+
+        double denominator = Math.max(Math.abs(y) + Math.abs(x) +
+                Math.abs(rx), 1);
+        double frontLeftPower = (y + x + rx) / denominator;
+
+        double backLeftPower = (y - x + rx) / denominator;
+        double frontRightPower = (y - x - rx) / denominator;
+        double backRightPower = (y + x - rx) / denominator;
+        double frontRightEncoder = encoder;
+        double backRightEncoder = encoder;
+
+        while (Math.abs(rightFrontDrive.getCurrentPosition()) <
+                frontRightEncoder ||
+                Math.abs(rightBackDrive.getCurrentPosition()) < backRightEncoder) {
+
+            rx = -(angleAheadDegrees - getAngle()) * 0.01;
+            denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+
+            frontLeftPower = (y + x + rx) / denominator;
+            backLeftPower = (y - x + rx) / denominator;
+            frontRightPower = (y - x - rx) / denominator;
+            backRightPower = (y + x - rx) / denominator;
+            leftFrontDrive.setPower(frontLeftPower);
+            leftBackDrive.setPower(backLeftPower);
+            rightBackDrive.setPower(frontRightPower);
+            rightFrontDrive.setPower(backRightPower);
+        }
+        leftBackDrive.setPower(0);
+        leftBackDrive.setPower(0);
+        rightFrontDrive.setPower(0);
+        rightBackDrive.setPower(0);
+    }
+
+    public double getAngle() {
+        return imu.getRobotOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
+    }
 }

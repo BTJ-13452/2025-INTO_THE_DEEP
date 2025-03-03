@@ -26,7 +26,7 @@ public class Test___Autonomous extends OpMode {
     ErectionSystem erection;
     ElevatorTest elevator;
     Claw claw;
-    double p ;
+    double p;
 
     BNO055IMU imu;
 
@@ -40,12 +40,12 @@ public class Test___Autonomous extends OpMode {
     @Override
     public void init() {
 
-        drive = new DriveSystem(hardwareMap, gamepad1, 0, telemetry);
+        drive = new DriveSystem(hardwareMap, telemetry,true);
         //  cameraServo = new CameraServo(hardwareMap);
         erection = new ErectionSystem(hardwareMap, false);
         elevator = new ElevatorTest(hardwareMap);
         claw = new Claw(hardwareMap);
-        telemetry.addData("init",1);
+        telemetry.addData("init", 1);
         telemetry.update();
         drive.resetEncoder2();
 
@@ -60,14 +60,22 @@ public class Test___Autonomous extends OpMode {
 
     @Override
     public void loop() {
+        drive.resetFildo();
+        telemetry.addData("OdometryStraightPosition= ", drive.getOdometryStraightPosition());
+        telemetry.addData("angles=",drive.getAngel());
+        telemetry.addData("", " ");
+        telemetry.addData("rightBackDrive", drive.getOdometryStraightPosition());
+        telemetry.addData("rightFrontDrive", drive.getRightFrontPosition());
+        telemetry.addData("", " ");
+        telemetry.addData("Angle = ",drive.getAngle());
+        telemetry.update();
 
-       while (drive.getOdometryStraightPosition() < 30000){
-           telemetry.addData("OdometryStraightPosition",drive.getOdometryStraightPosition());
-           telemetry.addData("p= ",p);
-           telemetry.update();
-           p = 1 - (drive.getOdometryStraightPosition()/10000000);
-           drive.driveByPID(0.3);
-       }
+
+
+      //  drive.driveByEncoder(0.5,0,30,0);
+
+
+
     }
 
 }
