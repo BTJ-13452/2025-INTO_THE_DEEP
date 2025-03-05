@@ -18,7 +18,7 @@ public class ErectionSystem {
     final String RIGHT_MOTOR_CONFIGURE = "rm";
     final String LEFT_MOTOR_CONFIGURE = "lm";
 
-    final double POWER = 0.7;
+    final double POWER = 1;
 
    public DcMotor motorRight;
     DcMotor motorLeft;

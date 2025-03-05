@@ -26,6 +26,7 @@ public class TestTeleOp extends OpMode {
     public Claw claw;
     DriveSystem drive;
     private boolean XPressed = false;
+    private boolean toRumble = false;
     private boolean right_stick_button_isPrassed = false;
     private boolean APressed = false;
     private boolean YPressed = false;
@@ -39,7 +40,7 @@ public class TestTeleOp extends OpMode {
     private boolean isElevatorOn_2383 = false;
     private boolean left_stick_button_Pressed = false;
     private boolean isCloseReset = false;
-    int erectionAutomation = 1660;
+    int erectionAutomation = 1470;
     int elevatorAutomation = 2400;
 
     ElevatorTest elevatorSystem;
@@ -57,40 +58,43 @@ public class TestTeleOp extends OpMode {
         elvatorErectionSystem = new ErectionSystem(hardwareMap, true);
         // sheiva = new TestSheiva(hardwareMap);
         hung = new Hung(hardwareMap);
-
+        drive.resetFildo();
     }
+
 
     @Override
     public void loop() {
         fixeYourSelf();
 //        telemetry.addData("magnet", elvatorErectionSystem.erectionMagnet.isPressed());
 //        telemetry.update();
+        //gamepad1.setLedColor(255, 0, 0, 120000);
 
-//        if (isFildoOn) {
-//            drive.Drive();
-//        } else
-        drive.DriveWithoutFildo();
+
+        if (isFildoOn) {
+            drive.Drive();
+        } else {
+            drive.DriveWithoutFildo();
+        }
+
         telemetry.addData("erectionHigh", elvatorErectionSystem.motorRight.getCurrentPosition());
-
         telemetry.addData("isFildoOn", isFildoOn);
         telemetry.addData("elevetorHigh", elevatorSystem.getTicks());
-        telemetry.addData("DSinCM", claw.distanceSensor.getDistance(DistanceUnit.CM));
         telemetry.addData("ErectionPosition ", elvatorErectionSystem.getPosition());
-        telemetry.addData("OdometryStraightPosition",drive.getOdometryStraightPosition());
-        telemetry.addData("OdometrySidePosition",drive.getOdometrySidePosition());
-        telemetry.addData("isElevatorOn_2383",isElevatorOn_2383);
-
+        telemetry.addData("OdometryStraightPosition", drive.getOdometryStraightPosition());
+        telemetry.addData("OdometrySidePosition", drive.getOdometrySidePosition());
+        telemetry.addData("isElevatorOn_2383", isElevatorOn_2383);
+        telemetry.addData("Angle = ", drive.getAngle());
+        telemetry.addData("ds1", claw.distanceSensor.getDistance(DistanceUnit.CM));
+        telemetry.addData("ds2", claw.distanceSensor2.getDistance(DistanceUnit.CM));
+        telemetry.addData("sampleIn= ", sampleIn);
         telemetry.update();
-
-        if (claw.isDS_see() && !sampleIn) {
-            claw.stop();
-        }
 
         if (gamepad1.x && !XPressed) {
             XPressed = true;
             if (!claw.isDS_see()) {
                 claw.frontCloseIN();
                 sampleIn = false;
+                toRumble = false;
             } else {
                 sampleIn = true;
                 claw.frontCloseIN();
@@ -105,6 +109,7 @@ public class TestTeleOp extends OpMode {
             if (!claw.isDS_see()) {
                 claw.frontCloseOUT();
                 sampleIn = false;
+                toRumble = false;
 
             } else {
                 sampleIn = true;
@@ -131,6 +136,7 @@ public class TestTeleOp extends OpMode {
             APressed = true;
             claw.openJoint();
             sampleIn = false;
+            toRumble = false;
 
         } else if (!gamepad1.a)
             APressed = false;
@@ -161,12 +167,12 @@ public class TestTeleOp extends OpMode {
         if (gamepad1.left_bumper) {
             isElevatorOn_2383 = false;
             elevatorSystem.lowerElevator();
-           // telemetry.addData("2",2);
-           // telemetry.update();
+            // telemetry.addData("2",2);
+            // telemetry.update();
         }
         if (!gamepad1.left_bumper && !gamepad1.right_bumper && !isElevatorOn_2383) {
             elevatorSystem.StopElevator();
-         //      telemetry.addData("3",3);
+            //      telemetry.addData("3",3);
             //  telemetry.update();
         }
 
@@ -177,25 +183,31 @@ public class TestTeleOp extends OpMode {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
+                    claw.openJoint();
                     elvatorErectionSystem.CloseElevator();
-                    sleep(250);
+                    sleep(1);
                     claw.closeJoint();
                 }
             }).start();
-            elevatorSystem.CloseElevator();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    elevatorSystem.CloseElevator();
+                }
+            }).start();
         } else if (!gamepad1.right_stick_button) {
             right_stick_button_isPrassed = false;
         }
 
-//        if (gamepad1.left_stick_button && !left_stick_button_Pressed) {
-////            drive.resetFildo();
-////           isFildoOn = !isFildoOn;
-//            left_stick_button_Pressed = true;
-//            hanging = false;
-//        } else if (!gamepad1.left_stick_button) {
-//            left_stick_button_Pressed = false;
-//        }
-        //  drive.printTata();
+        if (gamepad1.left_stick_button && !left_stick_button_Pressed) {
+            drive.resetFildo();
+            isFildoOn = !isFildoOn;
+            left_stick_button_Pressed = true;
+            hanging = false;
+        } else if (!gamepad1.left_stick_button) {
+            left_stick_button_Pressed = false;
+        }
+//        drive.printTata();
 
 
         if (gamepad1.dpad_down && !isErectionOn_1450 && !isElevatorOn_2383) {
@@ -213,7 +225,7 @@ public class TestTeleOp extends OpMode {
         if (elvatorErectionSystem.getPosition() <= erectionAutomation + 2 && elvatorErectionSystem.getPosition() >= erectionAutomation - 2) {
             isErectionOn_1450 = false;
         }
-        if (-elevatorSystem.getTicks() <= elevatorAutomation + 5 && -elevatorSystem.getTicks() >= elevatorAutomation - 5){
+        if (-elevatorSystem.getTicks() <= elevatorAutomation + 7 && -elevatorSystem.getTicks() >= elevatorAutomation - 7) {
             isElevatorOn_2383 = false;
         }
 //        if (sheiva.distanceSensor.getDistance(DistanceUnit.CM) < 4 && !sampleIn) {
@@ -227,13 +239,27 @@ public class TestTeleOp extends OpMode {
 //        telemetry.update();
 
 //        telemetry.addData("sidd", sheiva.distanceSensor.getDistance(DistanceUnit.CM));
-      if (claw.isDS_see() && !isCloseReset){
-          claw.openJoint();
-          elevatorSystem.CloseElevator();
-          isCloseReset = true;
-      } else if (!claw.isDS_see()){
-          isCloseReset = false;
-      }
+
+        //rumble
+        if (claw.isDS_see() && !toRumble) {
+            gamepad1.rumble(50);
+            toRumble = true;
+        } else if (!sampleIn) {
+            gamepad1.stopRumble();
+        }
+
+        if (claw.isDS_see() && !sampleIn) {
+            claw.stop();
+        }
+
+        if (claw.isDS_see() && !isCloseReset) {
+            claw.closeJoint();
+            elevatorSystem.CloseElevator();
+            isCloseReset = true;
+        } else if (!claw.isDS_see()) {
+            isCloseReset = false;
+        }
+
 
     }
 
@@ -242,7 +268,7 @@ public class TestTeleOp extends OpMode {
         if (!((elvatorErectionSystem.motorRight.getCurrentPosition() >= FIRST_RANGE) || elevatorSystem.elevator.getCurrentPosition() >= -1538)) {
             elevatorSystem.elevator.setPower(1);
             elevatorSystem.elevator2.setPower(1);
-          //  telemetry.addData("4", 4);
+            //  telemetry.addData("4", 4);
 //            telemetry.update();
 
         }

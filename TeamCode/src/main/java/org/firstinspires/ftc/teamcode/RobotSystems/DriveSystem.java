@@ -88,7 +88,7 @@ public class DriveSystem {
 //
 //        leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 //        rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
+//
 //        leftFrontDrive.setTargetPosition(0);
 //        rightBackDrive.setTargetPosition(0);
 //        leftBackDrive.setTargetPosition(0);
@@ -224,7 +224,7 @@ public class DriveSystem {
         telemetry.addData("lf", leftFrontDrive.getCurrentPosition());
         telemetry.addData("rb", rightBackDrive.getCurrentPosition());
         telemetry.addData("rf", rightFrontDrive.getCurrentPosition());
-        telemetry.update();
+
 
     }
 
@@ -355,30 +355,26 @@ public class DriveSystem {
 // (30.16 / 537.6) * encoder = CM
 // 0.0561 * encoder = CM
 // encoder = CM / 0.0561
-        double encoder = CM / 0.0561;
+        double encoder = CM / 0.0561; // לשנות למספר רלוונטי למנועים שלנו
         rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        double y = -(power *
-                Math.sin(Math.toRadians(-angleDegrees) + Math.PI / 2));
-        double x = -(power *
-                Math.cos(Math.toRadians(-angleDegrees) + Math.PI / 2));
+        double y = (power * Math.sin(Math.toRadians(-angleDegrees) + Math.PI / 2));
+        double x = -(power * Math.cos(Math.toRadians(-angleDegrees) + Math.PI / 2));
         double rx = -(angleAheadDegrees - getAngle()) * 0.01;
 
-        double denominator = Math.max(Math.abs(y) + Math.abs(x) +
-                Math.abs(rx), 1);
-        double frontLeftPower = (y + x + rx) / denominator;
+        double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
 
+        double frontLeftPower = (y + x + rx) / denominator;
         double backLeftPower = (y - x + rx) / denominator;
         double frontRightPower = (y - x - rx) / denominator;
         double backRightPower = (y + x - rx) / denominator;
+
         double frontRightEncoder = encoder;
         double backRightEncoder = encoder;
 
-        while (Math.abs(rightFrontDrive.getCurrentPosition()) <
-                frontRightEncoder ||
-                Math.abs(rightBackDrive.getCurrentPosition()) < backRightEncoder) {
+        while (Math.abs(rightFrontDrive.getCurrentPosition()) < frontRightEncoder || Math.abs(rightBackDrive.getCurrentPosition()) < backRightEncoder ) {
 
             rx = -(angleAheadDegrees - getAngle()) * 0.01;
             denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
@@ -387,18 +383,20 @@ public class DriveSystem {
             backLeftPower = (y - x + rx) / denominator;
             frontRightPower = (y - x - rx) / denominator;
             backRightPower = (y + x - rx) / denominator;
+
             leftFrontDrive.setPower(frontLeftPower);
             leftBackDrive.setPower(backLeftPower);
-            rightBackDrive.setPower(frontRightPower);
-            rightFrontDrive.setPower(backRightPower);
+            rightFrontDrive.setPower(frontRightPower);
+            rightBackDrive.setPower(backRightPower);
         }
         leftBackDrive.setPower(0);
-        leftBackDrive.setPower(0);
+        leftFrontDrive.setPower(0);
         rightFrontDrive.setPower(0);
         rightBackDrive.setPower(0);
     }
 
     public double getAngle() {
-        return imu.getRobotOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
+      return imu.getRobotOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
     }
+
 }

@@ -13,7 +13,7 @@ public class Claw {
 
     public boolean isInside = false;
     final private double MAX = 1;
-    final private double MAXOUT = -0.25;
+    final private double MAXOUT = -1 ;
     final private double MID = 0.3;
     final private double MID2 = 0.5;
     final private double MIN = 0;
@@ -91,7 +91,7 @@ public class Claw {
     }
 
     public Boolean isDS_see() {
-        return distanceSensor.getDistance(DistanceUnit.CM) < 3.2 && distanceSensor2.getDistance(DistanceUnit.CM) < 3.2;
+        return distanceSensor.getDistance(DistanceUnit.CM) < 5 && distanceSensor2.getDistance(DistanceUnit.CM) < 5;
     }
 }
 

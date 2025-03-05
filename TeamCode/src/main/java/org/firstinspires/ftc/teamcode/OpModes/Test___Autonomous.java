@@ -42,41 +42,37 @@ public class Test___Autonomous extends OpMode {
 
         drive = new DriveSystem(hardwareMap, telemetry,true);
         //  cameraServo = new CameraServo(hardwareMap);
-        erection = new ErectionSystem(hardwareMap, false);
-        elevator = new ElevatorTest(hardwareMap);
-        claw = new Claw(hardwareMap);
-        telemetry.addData("init", 1);
-        telemetry.update();
-        drive.resetEncoder2();
+//        erection = new ErectionSystem(hardwareMap, false);
+//        elevator = new ElevatorTest(hardwareMap);
+//        claw = new Claw(hardwareMap);
+//        telemetry.addData("init", 1);
+//        telemetry.update();
+//        drive.resetEncoder2();
 
     }
 
     @Override
     public void start() {
         super.start();
-        //drive.resetEncoder();
+        drive.resetEncoder();
+        drive.resetFildo();
     }
 
 
     @Override
     public void loop() {
-        drive.resetFildo();
+
         telemetry.addData("OdometryStraightPosition= ", drive.getOdometryStraightPosition());
         telemetry.addData("angles=",drive.getAngel());
         telemetry.addData("", " ");
         telemetry.addData("rightBackDrive", drive.getOdometryStraightPosition());
         telemetry.addData("rightFrontDrive", drive.getRightFrontPosition());
         telemetry.addData("", " ");
+        drive.printTata();
         telemetry.addData("Angle = ",drive.getAngle());
         telemetry.update();
 
-
-
-      //  drive.driveByEncoder(0.5,0,30,0);
-
-
-
+        drive.driveByEncoder(1,0,100,0);
     }
 
 }
-
