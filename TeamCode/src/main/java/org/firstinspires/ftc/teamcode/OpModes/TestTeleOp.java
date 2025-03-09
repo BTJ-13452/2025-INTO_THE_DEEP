@@ -41,7 +41,7 @@ public class TestTeleOp extends OpMode {
     private boolean left_stick_button_Pressed = false;
     private boolean isCloseReset = false;
     int erectionAutomation = 1470;
-    int elevatorAutomation = 2400;
+    int elevatorAutomation = 2450;
 
     ElevatorTest elevatorSystem;
     ErectionSystem elvatorErectionSystem;
