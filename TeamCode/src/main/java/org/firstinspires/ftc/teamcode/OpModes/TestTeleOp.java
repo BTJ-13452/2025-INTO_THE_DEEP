@@ -86,6 +86,8 @@ public class TestTeleOp extends OpMode {
         telemetry.addData("Angle = ", drive.getAngle());
         telemetry.addData("ds1", claw.distanceSensor.getDistance(DistanceUnit.CM));
         telemetry.addData("ds2", claw.distanceSensor2.getDistance(DistanceUnit.CM));
+        telemetry.addData(" ", "");
+        drive.printTata();
         telemetry.addData("sampleIn= ", sampleIn);
         telemetry.update();
 
@@ -118,19 +120,19 @@ public class TestTeleOp extends OpMode {
         } else if (!gamepad1.b) {
             BPressed = false;
         }
-
-        if (gamepad1.y && !YPressed) {
-            YPressed = true;
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    elvatorErectionSystem.raisedAndlowerErection(-1);
-                    elevatorSystem.CloseElevator2();
-                }
-            }).start();
-            hanging = true;
-        } else if (!gamepad1.y)
-            YPressed = false;
+//
+//        if (gamepad1.y && !YPressed) {
+//            YPressed = true;
+//            new Thread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    elvatorErectionSystem.raisedAndlowerErection(-1);
+//                    elevatorSystem.CloseElevator2();
+//                }
+//            }).start();
+//            hanging = true;
+//        } else if (!gamepad1.dpad_down)
+//            YPressed = false;
 
         if (gamepad1.a && !APressed) {
             APressed = true;
@@ -184,9 +186,9 @@ public class TestTeleOp extends OpMode {
                 @Override
                 public void run() {
                     claw.openJoint();
-                    elvatorErectionSystem.CloseElevator();
-                    sleep(1);
+                    sleep(500);
                     claw.closeJoint();
+                    elvatorErectionSystem.CloseElevator();
                 }
             }).start();
             new Thread(new Runnable() {
@@ -210,9 +212,10 @@ public class TestTeleOp extends OpMode {
 //        drive.printTata();
 
 
-        if (gamepad1.dpad_down && !isErectionOn_1450 && !isElevatorOn_2383) {
+        if (!YPressed && gamepad1.y && !isErectionOn_1450 && !isElevatorOn_2383) {
             isErectionOn_1450 = true;
             isElevatorOn_2383 = true;
+            YPressed = true;
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -222,6 +225,7 @@ public class TestTeleOp extends OpMode {
                 }
             }).start();
         }
+        YPressed = false;
         if (elvatorErectionSystem.getPosition() <= erectionAutomation + 2 && elvatorErectionSystem.getPosition() >= erectionAutomation - 2) {
             isErectionOn_1450 = false;
         }

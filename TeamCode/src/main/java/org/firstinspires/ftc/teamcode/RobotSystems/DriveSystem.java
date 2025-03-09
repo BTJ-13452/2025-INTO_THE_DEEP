@@ -348,13 +348,13 @@ public class DriveSystem {
     }
 
     public void driveByEncoder(double power, double angleDegrees, int CM, int angleAheadDegrees) {
-// 9.6 CM Koter
-// 9.6 * PI = Hekef
-// Hekef = 30.16
-// encoder for one round = 537.6
-// (30.16 / 537.6) * encoder = CM
-// 0.0561 * encoder = CM
-// encoder = CM / 0.0561
+        // 9.6 CM Koter
+        // 9.6 * PI = Hekef
+        // Hekef = 30.16
+        // encoder for one round = 537.6
+        // (30.16 / 537.6) * encoder = CM
+        // 0.0561 * encoder = CM
+        // encoder = CM / 0.0561
         double encoder = CM / 0.0561; // לשנות למספר רלוונטי למנועים שלנו
         rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

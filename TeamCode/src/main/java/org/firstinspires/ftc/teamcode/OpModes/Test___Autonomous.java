@@ -67,7 +67,7 @@ public class Test___Autonomous extends OpMode {
         telemetry.addData("", " ");
         telemetry.addData("rightBackDrive", drive.getOdometryStraightPosition());
         telemetry.addData("rightFrontDrive", drive.getRightFrontPosition());
-        telemetry.addData("", " ");
+        telemetry.addLine();
         drive.printTata();
         telemetry.addData("Angle = ",drive.getAngle());
         telemetry.update();
