@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.OpModes;
 
 import static android.os.SystemClock.sleep;
 
+import com.acmerobotics.roadrunner.SequentialAction;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -9,6 +10,7 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.apache.commons.math3.ode.events.Action;
 import org.firstinspires.ftc.robotcore.external.Event;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -220,7 +222,7 @@ public class TestTeleOp extends OpMode {
                 @Override
                 public void run() {
                     elvatorErectionSystem.openErectionByTicks(erectionAutomation);
-                    sleep(500);
+                    sleep(0);
                     elevatorSystem.elevatorbyticks(elevatorAutomation);
                 }
             }).start();
@@ -277,6 +279,15 @@ public class TestTeleOp extends OpMode {
 
         }
     }
+//    public static Action ScoreSample(){
+//        return new SequentialAction(
+//                elvatorErectionSystem.openErectionByTicks(erectionAutomation),
+//                elevatorSystem.elevatorbyticks(elevatorAutomation),
+//                claw.closeJoint()
+//        );
+//
+//
+//    }
 
 
     @Override
