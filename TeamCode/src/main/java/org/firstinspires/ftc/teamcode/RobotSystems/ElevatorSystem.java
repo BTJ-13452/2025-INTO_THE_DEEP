@@ -1,39 +1,39 @@
 
-package org.firstinspires.ftc.teamcode.OpModes;
+package org.firstinspires.ftc.teamcode.RobotSystems;
 
 
 import static android.os.SystemClock.sleep;
 
-import android.app.Notification;
+import androidx.annotation.NonNull;
 
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
-import org.apache.commons.math3.ode.events.Action;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 /**
  * The ElevatorSystem class represents the robot's elevator system.
  */
-public class ElevatorTest {
-    boolean opmodisactive = true;
+public class ElevatorSystem {
+    public boolean opmodisactive = true;
     final int FIRST_RANGE = 550;
-    final int SECOND_RANGE = 4000;
-    public DcMotor elevator;
-    public DcMotor elevator2;
-    private TouchSensor elevatorMagnet;
+    public static DcMotor elevator;
+    public static DcMotor elevator2;
+    private final TouchSensor elevatorMagnet;
     // private TouchSensor magneticSwitch;
     private final double Speed = 1;
-    private final int MAX_HEIGHT = 1000;
-    private final int POWER = 1;
+    private static final int POWER = 1;
+    static Telemetry telemetry;
 
     /**
      * Constructs a new ElevatorSystem.
      *
      * @param map The HardwareMap for accessing hardware devices.
      */
-    public ElevatorTest(HardwareMap map) {
+    public ElevatorSystem(HardwareMap map, Telemetry telemetry) {
         elevator = map.dcMotor.get("elevatormotor");
         elevator2 = map.dcMotor.get("elevatormotor2");
         elevatorMagnet = map.touchSensor.get("elevatorMagnet");
@@ -44,35 +44,16 @@ public class ElevatorTest {
         elevator2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         elevator2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         elevator2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        CloseElevator();
+        closeElevator();
+        ElevatorSystem.telemetry = telemetry;
     }
 
-    /**
-     * Extends the elevator.
-     */
-    public void raisedAndlowerElevator(double multiplier, Boolean isErectionMIsPressd) {
-        elevator.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        if ((multiplier > 0 && !elevatorMagnet.isPressed()) || (multiplier <= 0 && (!isErectionMIsPressd || elevator.getCurrentPosition() >= -1538))) {
-
-            elevator.setPower(POWER * multiplier);
-
-        } else {
-            elevator.setPower(0);
-        }
-    }
-
-    public void OpenElevator(int ticks) {
-        elevator.setTargetPosition(-ticks);
-        elevator.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        elevator.setPower(-POWER);
-    }
-
-    public void upperElevator(int isErectionMIsPressd) {
+    public void raiseElevator(int elbowPosition) {
         elevator.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         elevator2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         if (elevator.getCurrentPosition() >= -3075) {
-            if ((isErectionMIsPressd >= FIRST_RANGE) || elevator.getCurrentPosition() >= -1538 )  {
+            int MAX_HEIGHT = 1538;
+            if ((elbowPosition >= FIRST_RANGE) || elevator.getCurrentPosition() >= -MAX_HEIGHT)  {
                 elevator.setPower(-Speed);
                 elevator2.setPower(-Speed);
             } else {
@@ -108,23 +89,20 @@ public class ElevatorTest {
         elevator2.setPower(0);
     }
 
-    public int getTicks() {
-        return elevator.getCurrentPosition();
+    public static int getTicks() {
+        return elevator2.getCurrentPosition();
     }
 
     /**
      * Closes the elevator until the magnetic switch is pressed.
      */
-    public void CloseElevator() {
+    public void closeElevator() {
         elevator.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         elevator2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         final boolean[] isPassedTime = {false};
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                sleep(3000);
-                isPassedTime[0] = true;
-            }
+        new Thread(() -> {
+            sleep(3000);
+            isPassedTime[0] = true;
         }).start();
         while (!isPassedTime[0] && !elevatorMagnet.isPressed()) {
             elevator.setPower(Speed);
@@ -134,16 +112,7 @@ public class ElevatorTest {
         elevator2.setPower(0);
     }
 
-    public void CloseElevator2() {
-        while (opmodisactive) {
-            elevator.setPower(1);
-            elevator2.setPower(1);
-        }
-        elevator.setPower(0);
-        elevator2.setPower(0);
-    }
-
-    public void elevatorbyticks(int ticks) {
+    public static void setElevatorPositionByTicks(int ticks) {
         elevator.setTargetPosition(-ticks);
         elevator2.setTargetPosition(-ticks);
 
@@ -152,6 +121,29 @@ public class ElevatorTest {
 
         elevator.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         elevator2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+
+    //auto actions
+
+    public static class setElevatorPositionByTicksAction implements com.acmerobotics.roadrunner.Action {
+        int pos;
+
+        public setElevatorPositionByTicksAction(int pos) {
+            this.pos = pos;
+        }
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            if (getTicks() > - pos + 50||getTicks() < - pos - 50) {
+                setElevatorPositionByTicks(pos);
+                telemetry.addData("Elevator",getTicks());
+                telemetry.update();
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
     }
 
 }
