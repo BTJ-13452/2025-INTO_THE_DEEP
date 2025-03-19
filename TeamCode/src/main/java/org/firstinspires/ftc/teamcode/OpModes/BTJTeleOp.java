@@ -277,6 +277,7 @@ public class BTJTeleOp extends OpMode {
     }
 
     public void printTelemetry() {
+        telemetry.addData("time", getRuntime());
         telemetry.addData("ds1", IntakeSystem.distanceSensor.getDistance(DistanceUnit.CM));
         telemetry.addData("ds2", IntakeSystem.distanceSensor2.getDistance(DistanceUnit.CM));
         telemetry.addData("color", IntakeSystem.getColor());

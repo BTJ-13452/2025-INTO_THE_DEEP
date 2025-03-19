@@ -89,7 +89,7 @@ public class AutonomousSpecimen extends LinearOpMode {
 
     }
 
-    public static Action scoringAction(Action driveScoringAction) {
+    public Action scoringAction(Action driveScoringAction) {
         return new SequentialAction(
                 new ParallelAction(
                         driveScoringAction,
@@ -111,7 +111,7 @@ public class AutonomousSpecimen extends LinearOpMode {
         );
     }
 
-    public static Action intakeAction(Action driveIntakeAction) {
+    public Action intakeAction(Action driveIntakeAction) {
         return new SequentialAction(
                 new ParallelAction(
                         driveIntakeAction,
@@ -120,49 +120,8 @@ public class AutonomousSpecimen extends LinearOpMode {
                 ),
                 new SleepAction(DELAY*10),
                 new ParallelAction(
-                new IntakeSystem.activateInatkeAction(),
+                new IntakeSystem.activateInatkeAction(this, telemetry),
                 new ElbowSystem.setPositionElbowByTicksAction(500)
-                )
-        );
-    }
-
-    public static Action intakeFromSubmersibleAction(Action driveAction) {
-        return new SequentialAction(
-                new ParallelAction(
-                        new ElevatorSystem.setElevatorPositionByTicksAction(0),
-                        new ElbowSystem.setPositionElbowByTicksAction(0),
-                        new IntakeSystem.midJointAction(),
-                        driveAction
-                ),
-                new ElevatorSystem.setElevatorPositionByTicksAction(ElevatorSystem.MAX_FIRST_RANGE_POSE),
-
-                new ParallelAction(
-                        new IntakeSystem.lowerJointAction(),
-                        new ElevatorSystem.closeElevatorAction(),
-                        new IntakeSystem.activateSabmersibleIntakeAction(IntakeSystem.SampleColor.BLUE)
-                ),
-
-                new IntakeSystem.midJointAction(),
-                new ElevatorSystem.setElevatorPositionByTicksAction(0)
-        );
-    }
-
-    public static Action scoringFromSubmersibleAction(Action driveScoringAction) {
-        return new SequentialAction(
-                driveScoringAction,
-                new ParallelAction(
-                        new IntakeSystem.midJointAction(),
-                        new ElbowSystem.setPositionElbowByTicksAction(1480),
-                        new ElevatorSystem.setElevatorPositionByTicksAction(2300)
-                ),
-
-                new IntakeSystem.activateEjectionAction(),
-
-                new IntakeSystem.lowerJointAction(),
-                new SleepAction(DELAY),
-                new ParallelAction(
-                        new ElevatorSystem.setElevatorPositionByTicksAction(400),
-                        new ElbowSystem.setPositionElbowByTicksAction(0)
                 )
         );
     }

@@ -130,7 +130,7 @@ public class AutonomousSamplesRed extends LinearOpMode {
 
     }
 
-    public static Action scoringAction(Action driveScoringAction) {
+    public Action scoringAction(Action driveScoringAction) {
         return new SequentialAction(
                 new ParallelAction(
                         new IntakeSystem.midJointAction(),
@@ -151,17 +151,17 @@ public class AutonomousSamplesRed extends LinearOpMode {
         );
     }
 
-    public static Action intakeAction(Action driveIntakeAction) {
+    public Action intakeAction(Action driveIntakeAction) {
         return new SequentialAction(
                 driveIntakeAction,
                 new ParallelAction(
-                        new IntakeSystem.activateInatkeAction(),
+                        new IntakeSystem.activateInatkeAction(this, telemetry ),
                         new ElevatorSystem.setElevatorPositionByTicksAction(1700)
                 )
         );
     }
 
-    public static Action intakeFromSubmersibleAction(Action driveAction) {
+    public Action intakeFromSubmersibleAction(Action driveAction) {
         return new SequentialAction(
                 new ParallelAction(
                         new ElevatorSystem.setElevatorPositionByTicksAction(1500),
@@ -180,7 +180,7 @@ public class AutonomousSamplesRed extends LinearOpMode {
         );
     }
 
-    public static Action scoringFromSubmersibleAction(Action driveScoringAction) {
+    public Action scoringFromSubmersibleAction(Action driveScoringAction) {
         return new SequentialAction(
                 new ParallelAction(
                         driveScoringAction,

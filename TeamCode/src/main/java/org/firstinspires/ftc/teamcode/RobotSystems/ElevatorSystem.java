@@ -140,8 +140,6 @@ public class ElevatorSystem {
         public boolean run(@NonNull TelemetryPacket packet) {
             if (getTicks() > -pos + 20 || getTicks() < -pos - 20) {
                 setElevatorPositionByTicks(pos);
-                telemetry.addData("Elevator", getTicks());
-                telemetry.update();
                 return true;
             } else {
                 return false;

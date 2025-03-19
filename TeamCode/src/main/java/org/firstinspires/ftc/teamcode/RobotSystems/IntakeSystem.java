@@ -4,12 +4,14 @@ import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 public class IntakeSystem {
@@ -158,11 +160,27 @@ public class IntakeSystem {
     }
 
     public static class activateInatkeAction implements Action {
+        static final double TIME_TO_TAKE = 1.5;
+        LinearOpMode thisOpMode;
+        Telemetry telemetry;
+        Boolean isRunTimeReset = false;
+
+        public activateInatkeAction(LinearOpMode thisOpMode, Telemetry telemetry) {
+            this.thisOpMode = thisOpMode;
+            this.telemetry = telemetry;
+            thisOpMode.resetRuntime();
+            telemetry.addData("time", thisOpMode.getRuntime());
+            telemetry.update();
+        }
 
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
+            if(!isRunTimeReset){
+                isRunTimeReset = true;
+                thisOpMode.resetRuntime();
+            }
 
-            if (!fullyInside()) {
+            if (!fullyInside() && thisOpMode.getRuntime() < TIME_TO_TAKE) {
                 if (servoIntakeR.getPower() == 0) {
                     activateIntake();
                 }
