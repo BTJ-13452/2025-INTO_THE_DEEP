@@ -22,17 +22,16 @@ public class DriveSystem {
     private final DcMotor rightFrontDrive;
     private final DcMotor rightBackDrive;
 
-    IMU imu;
+    static IMU imu;
     Orientation angles = new Orientation();
     public double initYaw;
     Gamepad gamepad;
     Telemetry telemetry;
-    int startAngel;
+    static double startAngel;
 
-    public boolean opModeIsActive = false;
+    public static boolean isAutoFieldOriented = false;
 
-    public DriveSystem(HardwareMap map, Gamepad gamepad, int startAngel, Telemetry telemetry) {
-        this.startAngel = startAngel;
+    public DriveSystem(HardwareMap map, Gamepad gamepad, Telemetry telemetry) {
         this.gamepad = gamepad;
         leftBackDrive = map.get(DcMotor.class, "BL");
         leftFrontDrive = map.get(DcMotor.class, "FL");
@@ -47,10 +46,13 @@ public class DriveSystem {
         rightFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        imu = map.get(IMU.class, "imu");
-        imu.resetYaw();
-
         this.telemetry = telemetry;
+
+        if(!isAutoFieldOriented){
+            startAngel = 0;
+            imu = map.get(IMU.class, "imu");
+            imu.resetYaw();
+        }
     }
 
     public DriveSystem(HardwareMap map, Telemetry telemetry, boolean isBasket) {
@@ -76,7 +78,8 @@ public class DriveSystem {
         imu.resetYaw();
     }
 
-    public void resetFildo() {
+    public void resetFieldOriented() {
+        startAngel = 0;
         imu.resetYaw();
     }
 
@@ -165,23 +168,18 @@ public class DriveSystem {
         telemetry.addData("lf", leftFrontDrive.getCurrentPosition());
         telemetry.addData("rb", rightBackDrive.getCurrentPosition());
         telemetry.addData("rf", rightFrontDrive.getCurrentPosition());
-
-
     }
 
-    public void resetEncoder() {
-        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    public static void setStartAngel(double angel,HardwareMap map){
+        isAutoFieldOriented = true;
+        imu = map.get(IMU.class, "imu");
+        imu.resetYaw();
+        DriveSystem.startAngel = angel;
     }
+
 
     public double getOdometryStraightPosition() {
         return rightBackDrive.getCurrentPosition();
-    }
-
-    public double getRightFrontPosition() {
-        return rightFrontDrive.getCurrentPosition();
     }
 
 

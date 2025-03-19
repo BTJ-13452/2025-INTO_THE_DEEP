@@ -18,14 +18,19 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
  * The ElevatorSystem class represents the robot's elevator system.
  */
 public class ElevatorSystem {
-    public boolean opmodisactive = true;
-    final int FIRST_RANGE = 550;
+    public static final int MAX_FIRST_RANGE_POSE = 1800;
+    final static int FIRST_RANGE = 550;
+    public static final int HANGING_ELEVATOR_POSE = 2900;
+    private static final double Speed = 1;
+    private static final int POWER = 1;
+
+    public static boolean opmodisactive = true;
+
     public static DcMotor elevator;
     public static DcMotor elevator2;
-    private final TouchSensor elevatorMagnet;
+    private static TouchSensor elevatorMagnet;
     // private TouchSensor magneticSwitch;
-    private final double Speed = 1;
-    private static final int POWER = 1;
+
     static Telemetry telemetry;
 
     /**
@@ -48,12 +53,11 @@ public class ElevatorSystem {
         ElevatorSystem.telemetry = telemetry;
     }
 
-    public void raiseElevator(int elbowPosition) {
+    public static void raiseElevator(int elbowPosition) {
         elevator.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         elevator2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         if (elevator.getCurrentPosition() >= -3075) {
-            int MAX_HEIGHT = 1538;
-            if ((elbowPosition >= FIRST_RANGE) || elevator.getCurrentPosition() >= -MAX_HEIGHT)  {
+            if ((elbowPosition >= FIRST_RANGE) || elevator.getCurrentPosition() >= -MAX_FIRST_RANGE_POSE) {
                 elevator.setPower(-Speed);
                 elevator2.setPower(-Speed);
             } else {
@@ -69,7 +73,7 @@ public class ElevatorSystem {
     /**
      * Lowers the elevator if the magnetic switch is not pressed.
      */
-    public void lowerElevator() {
+    public static void lowerElevator() {
         elevator.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         elevator2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         if (!elevatorMagnet.isPressed()) {
@@ -84,7 +88,7 @@ public class ElevatorSystem {
     /**
      * Stops the elevator.
      */
-    public void StopElevator() {
+    public static void StopElevator() {
         elevator.setPower(0);
         elevator2.setPower(0);
     }
@@ -96,7 +100,7 @@ public class ElevatorSystem {
     /**
      * Closes the elevator until the magnetic switch is pressed.
      */
-    public void closeElevator() {
+    public static void closeElevator() {
         elevator.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         elevator2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         final boolean[] isPassedTime = {false};
@@ -134,15 +138,29 @@ public class ElevatorSystem {
 
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            if (getTicks() > - pos + 50||getTicks() < - pos - 50) {
+            if (getTicks() > -pos + 20 || getTicks() < -pos - 20) {
                 setElevatorPositionByTicks(pos);
-                telemetry.addData("Elevator",getTicks());
+                telemetry.addData("Elevator", getTicks());
                 telemetry.update();
                 return true;
-            }
-            else {
+            } else {
                 return false;
             }
+        }
+    }
+
+
+    public static class closeElevatorAction implements com.acmerobotics.roadrunner.Action {
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            final double ELEVATOR_SPEED = 0.3;
+
+            elevator.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            elevator2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            elevator.setPower(ELEVATOR_SPEED);
+            elevator2.setPower(ELEVATOR_SPEED);
+            return false;
         }
     }
 

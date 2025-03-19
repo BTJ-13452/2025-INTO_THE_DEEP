@@ -18,12 +18,13 @@ public class ElbowSystem {
 
     final String RIGHT_MOTOR_CONFIGURE = "rm";
     final String LEFT_MOTOR_CONFIGURE = "lm";
+    public static final int HANGING_ELBOW_POSE = 1500;
 
     static final double POWER = 1;
 
     public static DcMotor motorRight;
-    static DcMotor motorLeft;
-    public TouchSensor erectionMagnet;
+    public static DcMotor motorLeft;
+    public static TouchSensor erectionMagnet;
 
     /**
      * Constructor for the System_ElevatorErection class.
@@ -50,11 +51,11 @@ public class ElbowSystem {
         }
     }
 
-    public void raisedAndLowerElbow(double multiplier) {
+    public static void raisedAndLowerElbow(double multiplier) {
         motorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        if ((!erectionMagnet.isPressed() || multiplier >= 0) && (motorRight.getCurrentPosition() <= 1600 || multiplier <= 0)) {
+        if ((!erectionMagnet.isPressed() || multiplier >= 0) && (motorRight.getCurrentPosition() <= 1470 || multiplier <= 0)) {
             motorLeft.setPower(POWER * multiplier);
             motorRight.setPower(POWER * multiplier);
         } else {
@@ -63,7 +64,7 @@ public class ElbowSystem {
         }
     }
 
-    public void closeElbow() {
+    public static void closeElbow() {
         final boolean[] isPassedTime = {false};
         new Thread(() -> {
             sleep(3000);
@@ -119,7 +120,7 @@ public class ElbowSystem {
 
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            if (getPosition() < pos - 40 || getPosition() > pos + 40) {
+            if (getPosition() < pos - 20 || getPosition() > pos + 20) {
                 setPositionElbowByTicks(pos);
                 return true;
             } else {
