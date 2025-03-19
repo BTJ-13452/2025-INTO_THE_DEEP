@@ -13,6 +13,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.RoadRunner.MecanumDrive;
 import org.firstinspires.ftc.teamcode.RobotSystems.ClimbSystem;
+import org.firstinspires.ftc.teamcode.RobotSystems.DriveSystem;
 import org.firstinspires.ftc.teamcode.RobotSystems.IntakeSystem;
 import org.firstinspires.ftc.teamcode.RobotSystems.ElevatorSystem;
 import org.firstinspires.ftc.teamcode.RobotSystems.ElbowSystem;
@@ -30,6 +31,7 @@ public class AutonomousSpecimen extends LinearOpMode {
         new ElevatorSystem(hardwareMap, telemetry);
         new IntakeSystem(hardwareMap);
         new ClimbSystem(hardwareMap);
+        DriveSystem.setStartAngel(0,hardwareMap);
 
 
         final Pose2d currentPose = new Pose2d(0, -61, Math.toRadians(90));

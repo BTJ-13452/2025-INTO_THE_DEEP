@@ -73,6 +73,19 @@ public class BTJTeleOp extends OpMode {
             dpadDownPressed = false;
         }
 
+        if (gamepad1.dpad_right && !dpad_rightPressed) {
+            dpad_rightPressed = true;
+            ClimbSystem.startClimb();
+        } else if (!gamepad1.dpad_right) {
+            dpad_rightPressed = false;
+        }
+
+        if (gamepad1.dpad_up && !dpadUpPressed) {
+            dpadUpPressed = true;
+            ClimbSystem.openTail();
+        } else if (!gamepad1.dpad_up)
+            dpadUpPressed = false;
+
         if (!closeHanging) {
 
             fixYourself();
@@ -124,17 +137,7 @@ public class BTJTeleOp extends OpMode {
             }
 
 
-            if (gamepad1.dpad_right && !dpad_rightPressed) {
-                dpad_rightPressed = true;
-                ClimbSystem.startClimb();
-            } else if (!gamepad1.dpad_right) {
-                dpad_rightPressed = false;
-            }
-            if (gamepad1.dpad_up && !dpadUpPressed) {
-                dpadUpPressed = true;
-                ClimbSystem.openTail();
-            } else if (!gamepad1.dpad_up)
-                dpadUpPressed = false;
+
 
             if (!hanging && !isErectionOn_1450 && !hangingErection) {
                 ElbowSystem.raisedAndLowerElbow(gamepad1.right_trigger - gamepad1.left_trigger);
